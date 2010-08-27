@@ -46,9 +46,36 @@ def init():
 					
 	shutil.rmtree("output", ignore_errors=True)
 	
-def post():
+	
+def post(args):
 	""" Add a new post to the database """
-	pass
+	if len(args) < 1:
+	    print("Using standard input as the input file\n")
+	    infile = sys.stdin
+	else:
+	    infile = open(args[0])
+	    
+	try:
+	    text = infile.read()
+	except Exception as e:
+	    print("Unable to read from source: " + str(e))
+	    quit(-2)
+    
+    title = ""
+    while title == "":
+        title = raw_input("Give this post a title: ")
+        if title == "":
+            print("The post NEEDS a title. It will be sad without one! Try again.\n")
+            
+    try:
+        cursor = sqlite3.connect("posts.db").cursor()
+        cursor.execute("""insert into posts values (?, datetime('now'), ?)""", (title, text))
+        if cursor.rowcount < 1:
+            print("Hmm. For some reason the post couldn't be saved. I'm at a loss here...")
+    except Exception as e:
+        print("Unable to save post to database: " + str(e))
+        quit(-3)
+
 	
 def list():
 	""" Lists all of the posts in the database """
@@ -67,6 +94,7 @@ def list():
 	print("\nIf you would like to remove a post, do it like so:")
 	print("posty.py rm [id] \nWhere [id] is the post id seen above.")
 	
+	
 def rm(args):
 	""" Remove a post from the database """
 	try:
@@ -83,9 +111,11 @@ def rm(args):
 	else:
 		print("Successfully deleted post #" + str(id) + "!")
 	
+	
 def render(args):
 	""" Render the posts and pages into a bunch of HTML files """
-	pass
+	print("render() is unimplemented")
+
 
 def main():
 	try:
@@ -105,6 +135,9 @@ def main():
 		rm(args)
 	else:
 		print("\n\nInvalid command!")
+		
+	# Everything must have gone quite swimmingly
+	quit(0)
 	
 
 if __name__ == "__main__":
