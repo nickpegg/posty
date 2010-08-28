@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>	
+		<title>nickpegg.com : {% block title %}{% endblock %}</title>
+		
+		<link rel="stylesheet" href="main.css" type="text/css" />
+	</head>
+	
+	<body>
+		<header>
+			<a class="header" href=""><h1>nickpegg.com</h1></a>
+		</header>
+
+		<nav id="menu" class="menu">
+			<h2 class="menu">Menu</h2>
+			{% for p in pages %}
+				{% if p.parent == None %}
+					<a class="item" href="{{p.href}}">{{p.title}}</a>
+				{% else %}
+					<a class="subitem" href="{{p.href}}">{{p.title}}</a>
+				{% endif %}
+			{% endfor %}
+		</nav>
+		
+		<div id="content">
+			{% block content %}
+			{% endblock %}
+		</div>
+
+		<footer class="info">
+			<p>Copyright 2010 Nick Pegg</p>
+			<p>Powered by <a href="http://nickpegg.com/pages/posty.html">Posty</a></p>
+		</footer>
+	</body>
+</html>
