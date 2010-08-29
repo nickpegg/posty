@@ -1,25 +1,29 @@
 <!DOCTYPE html>
 <html>
 	<head>	
-		<title>nickpegg.com : {% block title %}{% endblock %}</title>
-		
-		<link rel="stylesheet" href="main.css" type="text/css" />
+		<title>My website - {% block title %}{% endblock %}</title>
 	</head>
 	
 	<body>
 		<header>
-			<a class="header" href=""><h1>nickpegg.com</h1></a>
+            <div class="header">
+                <a href="/">My Website</a>
+            </div>
 		</header>
 
-		<nav id="menu" class="menu">
-			<h2 class="menu">Menu</h2>
-			{% for p in pages %}
-				{% if p.parent == None %}
-					<a class="item" href="{{p.href}}">{{p.title}}</a>
-				{% else %}
-					<a class="subitem" href="{{p.href}}">{{p.title}}</a>
-				{% endif %}
-			{% endfor %}
+		<nav>
+            <div id="menu">
+                <h1>Menu</h1>
+                <ul>
+                {% for p in pages %}
+                    {% if p.parent == None %}
+                        <li class="item"><a href="{{p.href}}">{{p.title}}</a></li>
+                    {% else %}
+                        <li class="subitem"><a href="{{p.href}}">{{p.title}}</a></li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+            </div>
 		</nav>
 		
 		<div id="content">
@@ -27,9 +31,11 @@
 			{% endblock %}
 		</div>
 
-		<footer class="info">
-			<p>Copyright 2010 Nick Pegg</p>
-			<p>Powered by <a href="http://nickpegg.com/pages/posty.html">Posty</a></p>
+		<footer>
+            <div class="footer">
+                <p>Copyright 2010 You</p>
+                <p>Powered by <a href="http://nickpegg.com/pages/posty.html">Posty</a></p>
+            </div>
 		</footer>
 	</body>
 </html>

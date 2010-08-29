@@ -1,37 +1,10 @@
-<!DOCTYPE html>
-<html>
-	<head>	
-		<title>nickpegg.com</title>
-		
-		<link rel="stylesheet" href="main.css" type="text/css" />
-	</head>
-	
-	<body>
-		<header>
-			<a class="header" href=""><h1>nickpegg.com</h1></a>
-		</header>
+{% extends "base.html" %}
 
-		<nav id="menu" class="menu">
-			<h2 class="menu">Menu</h2>
-			{% for p in pages %}
-				{% if p.parent == None %}
-					<a class="item" href="{{p.href}}">{{p.title}}</a>
-				{% else %}
-					<a class="subitem" href="{{p.href}}">{{p.title}}</a>
-				{% endif %}
-			{% endfor %}
-		</nav>
-		
-		<div id="content">
-			<article class="post">
-				<span class="postitile">{{page.title}}</a>
-				{{page.content}}
-			</article>
-		</div>
+{% block title %}{{page.title}}{% endblock %}
 
-		<footer class="info">
-			<p>Copyright 2010 Nick Pegg</p>
-			<p>Powered by <a href="http://nickpegg.com/pages/posty.html">Posty</a></p>
-		</footer>
-	</body>
-</html>
+{% block content %}
+	<div class="post">
+		<span class="postitile">{{page.title}}</a>
+		{{page.content|markdown}}
+	</div>
+{% endblock %}
