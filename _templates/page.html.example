@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}{{page.title}}{% endblock %}
+
+{% block content %}
+	<div class="post">
+		<span class="postitile">{{page.title}}</a>
+		{{page.content|markdown}}
+	</div>
+{% endblock %}
