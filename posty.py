@@ -12,8 +12,12 @@ Invoked via command line with a few commands.
 
 # Various settings
 PER_PAGE = 10        # How many posts should there be per page?
-TEMPLATE_PATH = 'templates/'
 
+# Locations of various files that Posty needs
+TEMPLATE_PATH = '_templates/'
+POSTS_PATH = '_posts/'
+PAGES_PATH = '_pages/'
+MEDIA_PATH = '_media/'
 
 # Only edit stuff below here if you're feeling adventurous :)
 
@@ -23,6 +27,7 @@ import shutil
 
 import sqlite3
 import markdown2
+import yaml
 from jinja2 import Environment, FileSystemLoader
 
 # Create a jinja environment
@@ -40,7 +45,7 @@ def file_write(filename, html):
         file = open(filename, 'w')
         file.write(html)
     except Exception as e:
-        print("Unable to write file: " + unicode(e))
+        print("Unable to write file: " + str(e))
 
 ### Command functions ###
 def init():
