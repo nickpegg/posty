@@ -3,9 +3,9 @@
 '''
 Posty
 Written by Nick Pegg
-http://nickpegg.com/
+http://github.com/nickpegg/posty/
 
-Very simple static blog engine.
+Very simple static blog generator.
 Takes in markdown files, spits out a website.
 Invoked via command line with a few commands.
 '''
@@ -15,7 +15,7 @@ PER_PAGE = 10        # How many posts should there be per page?
 TEMPLATE_PATH = 'templates/'
 
 
-# I wouldn't edit anything below here unless you're feeling adventorous. :)
+# Only edit stuff below here if you're feeling adventurous :)
 
 import os
 import sys
