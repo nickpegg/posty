@@ -24,17 +24,20 @@ MEDIA_PATH = '_media/'
 import os
 import sys
 import shutil
+import datetime
+from operator import itemgetter
 
 import sqlite3
 import markdown2
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+
 # Create a jinja environment
 jenv = Environment(loader=FileSystemLoader(TEMPLATE_PATH), cache_size=0)
 
 
-### Utility functions ###
+## Utility functions ###
 def render_markdown(value):
     ''' Simple jinja filter to render markdown text '''
     return markdown2.markdown(value)
@@ -47,116 +50,10 @@ def file_write(filename, html):
     except Exception as e:
         print("Unable to write file: " + str(e))
 
-### Command functions ###
-def init():
-    """ Initialize the blog. Create directories, database, etc. """
-
-    if os.path.isfile('posts.db'):
-        print("Uh-oh! Looks like you already have a posts database.")
-        print("Reinitializing will destroy EVERYTHING.")
-        print("Chiggity-check yourself before you wreck yourself.\n")
-        response = raw_input("Type YES if you really want to do re-initialize: ")
-
-        if response != "YES":
-            print("\nYou didn't type YES, so I'm not doing to do anything.")
-            quit()
-        print("\nAlright then. I'm giving you a blank slate now.")
-
-    print("\nInitializing your blog...")
-
-    # Init the database
-    sql_conn = sqlite3.connect("posts.db")
-    cursor = sql_conn.cursor()
-    cursor.execute('drop table if exists posts')
-    cursor.execute('''create table posts (id integer primary key
-                    autoincrement, title text, date text,
-                    body text);''')
-    sql_conn.commit()
-    cursor.close()
-    
-    shutil.rmtree("output", ignore_errors=True)
-
-
-def post(args):
-    """ Add a new post to the database """
-    if len(args) < 1:
-        print("Using standard input as the input file\n")
-        infile = sys.stdin
-    else:
-        infile = open(args[0])
-
-    try:
-        text = infile.read()
-    except Exception as e:
-        print("Unable to read from source: " + unicode(e))
-        quit(-2)
-
-    title = ''
-    while title == "":
-        title = raw_input("Give this post a title: ")
-        if title == "":
-            print("The post NEEDS a title. It will be sad without one! Try again.\n")
-
-    time = raw_input("Enter a time for this post (YYYY-MM-DD HH:MM:SS, or blank for now: \n")
-    if time == '':
-        time = 'now'
-
-    try:
-        conn = sqlite3.connect("posts.db")
-        cursor = conn.cursor()
-        
-        cursor.execute("insert into posts values (NULL, ?, ?, ?);", (title, time, text))
-        if cursor.rowcount < 1:
-            print("Hmm. For some reason the post couldn't be saved. I'm at a loss here...")
-        print("Post added!")
-        conn.commit()
-        cursor.close()
-    except Exception as e:
-        print("Unable to save post to database: " + unicode(e))
-        quit(-3)
-
-
-def list_posts():
-    """ Lists all of the posts in the database """
-    cursor = sqlite3.connect("posts.db").cursor()
-    cursor.execute("select * from posts")
-
-    print("\nID\tPost Title")
-    print("------------------")
-    for row in cursor:
-        print(unicode(row[0]) + "\t" + row[1])
-
-    print("\n\nIf you would like to remove a post, do it like so:")
-    print("posty.py rm [id] \nWhere [id] is the post id seen above.\n")
-
-
-def rm(args):
-    """ Remove a post from the database """
-    try:
-        id = int(args[0])
-    except:
-        print('''You either supplied no post it or one that's not a number!
-                Find a suitable one via the list command.''')
-
-    conn = sqlite3.connect("posts.db")
-    cursor = conn.cursor()
-    cursor.execute("delete from posts where id = %d" % int(id))
-
-    if cursor.rowcount < 1:
-        print("I couldn't find the post you're talking about. Check to see if it exists by using the list command.")
-    else:
-        print("Successfully deleted post #" + unicode(id) + "!")
-
-    conn.commit()
-    cursor.close()
-    
-    
+### Main functions ###
 def render(args):
     """ Render the posts and pages into a bunch of HTML files """
     
-    conn = sqlite3.connect('posts.db')
-    cursor = conn.cursor()
-
     if os.path.isdir('output'):
         try:
             shutil.rmtree('output')
@@ -165,65 +62,70 @@ def render(args):
             print("Error: " + unicode(e))
             quit(-1)
     os.mkdir('output')
-
-    cursor = sqlite3.connect('posts.db').cursor()
-
-    try:
-        cursor.execute('SELECT * FROM posts ORDER BY date DESC')
-    except Exception as e:
-        print("Unable to get the posts from the database: " + unicode(e))
-        quit(-1)
-
-    # Gather up the posts into a list of dicts
+    
+    # Gather up the posts
     posts = list()
-
-    for row in cursor:
-        post = dict()
-        post['id'] = row[0]
-        post['title'] = row[1]
-        post['date'] = row[2]
-        post['body'] = row[3]
-        post['href'] = '/posts/' + unicode(post['id']) + ".html"
-
-        posts.append(post)
-
-    # Gather up the pages into a list of dicts
+    
+    if os.path.isdir('_posts'):
+    	for file in os.listdir('_posts'):
+    		data = list()
+    		for doc in yaml.load_all(open(file)):
+    			data.append(doc)
+    		
+    		post = data[0]
+    		post['body'] = data[-1:]
+    		
+    		# Might as well validate while we're here
+    		if post['body'] == data[0]:
+    			print("Error: " + file + " has no post body. Skipping.")
+    			continue
+    		if post.get('title') is None:
+    			print("Error: " + file + " has no title. Skipping.")
+    			continue
+    		if post.get('date') is None:
+    			print("Error: " + file + " has no date. Skipping.")	
+    			continue
+    			
+    		# Everything must have gone fine, so let's add the post.	
+    		posts.append(post)
+    
+    # Gather up the pages
     pages = list()
-    if os.path.isdir('pages'):
-        page_list = os.listdir('pages')
-        page_list.sort()
-        
+    
+    if os.path.isdir('_pages'):
+    	for file in os.listdir('_pages'):
+    		data = list()
+    		for doc in yaml.load_all(open(file)):
+    			data.append(doc)
+    		
+    		page = data[0]
+    		page['body'] = data[-1:]
+    		
+    		# Let's validate this guy
+    		if page['body'] == data[0]:
+    			print("Error: " + file + " has no page body. Skipping.")
+    			continue
+    		if page.get('title') is None:
+    			print("Warning: " + file + " has no title. You may want one depending on your template.")
+			if page.get('url') is None:
+				print("Warning: " + file + " doesn't specify a URL. Using the page filename...")
+				page['url'] = file.replace('.yaml', '.html').replace('.yml', '.html')
+				
+			# Everything went better than expected.
+			pages.append(post)
+	
+	sorted_pages = sorted(pages, key=itemgetter('title'))
 
-        for file in page_list:
-            if os.path.isdir(file):
-                dir = file
-                subpage_list = os.listdir(os.path.abspath(file))
-                subpage_list.sort()
-
-                for file in subpage_list:
-                    if os.path.isfile(file):
-                        page = dict()
-                        page['parent'] = dir
-                        page['title'] = os.path.basename(file).capitalize()
-                        page['content'] = open(file).read()
-                        page['href'] = page['title'] + "/" + os.path.basename(file) + '.html'
-                        pages.append(page)
-            else:
-                page = dict()
-                page['parent'] = None
-                page['title'] = file.capitalize()
-                page['content'] = open('pages/' + file).read()
-                page['href'] = page['title'] + ".html"
-                pages.append(page)
-
+    
     # Render the posts as individual pages
-    outdir = 'output/posts/'
-    os.mkdir(outdir)
-
     template = jenv.get_template('post.html')
     for post in posts:
-        html = template.render(post=post, pages=pages)
-        file_write(outdir + unicode(post['id']) + ".html", html)
+    	date = datetime.strptime(post['date'], "%Y-%m-%d")
+        post['url'] = "/" + str(date.year) + "/" + str(date.month) + "/"
+        				+ str(post['id']) + ".html"
+        
+        html = template.render(post=post, pages=sorted_pages)
+        file_write("output" + post['url'])
 
     # Render the posts as grouped pages
     outdir = 'output/'
@@ -239,7 +141,7 @@ def render(args):
             next_page = None
         
         html = template.render(posts=posts[start:(start+PER_PAGE-1)],
-            pages=pages, prev_page=prev_page, next_page= next_page)
+            pages=sorted_pages, prev_page=prev_page, next_page= next_page)
         
         if start == 0:
             file_write(outdir + "index.html", html)
@@ -247,16 +149,13 @@ def render(args):
             file_write(outdir + "posts" + unicode(start) + ".html", html)
 
     # Render the pages
-    outdir = 'output/pages/'
-    os.mkdir(outdir)
-
     template = jenv.get_template('page.html')
     for page in pages:
-        html = template.render(page=page, pages=pages)
-        file_write(outdir + page['title'] + ".html", html)
+        html = template.render(page=page, pages=sorted_pages)
+        file_write(outdir + page['url'] , html)
         
     # Finally, copy all static content over
-    shutil.copytree('static', 'output/static/')
+    shutil.copytree('_media', 'output/media/')
 
     print("\nDone rendering! Check out output/index.html\n")
 
@@ -270,16 +169,8 @@ def main():
 
     args = sys.argv[2:]
 
-    if cmd == "init":
-        init()
-    elif cmd == "list":
-        list_posts()
-    elif cmd == "rm":
-        rm(args)
-    elif cmd == "render":
+    if cmd == "render":
         render(args)
-    elif cmd == "post":
-        post(args)
     else:
         print("\n\nInvalid command!")
 
