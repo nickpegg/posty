@@ -19,12 +19,15 @@ POSTS_PATH = '_posts/'
 PAGES_PATH = '_pages/'
 MEDIA_PATH = '_media/'
 
+OUTPUT_PATH = 'output/'
+
 # Only edit stuff below here if you're feeling adventurous :)
 
 import os
 import sys
 import shutil
 import datetime
+import re
 from operator import itemgetter
 
 import sqlite3
@@ -49,32 +52,45 @@ def file_write(filename, html):
         file.write(html)
     except Exception as e:
         print("Unable to write file: " + str(e))
+        
+def read_header(file):
+    contents = file.read()
+    try:
+        matches = re.match('(^---\n+(?:.*\n)+)---\n((.*\n?)+)', contents, re.MULTILINE).groups()
+        
+        header = matches[0]
+        for m in matches[1:]:
+            body += m
+    catch:
+        print("The header in " + file + " is screwey. Fix it.")
+        quit(-1)
+        
+    item = yaml.load(header)
+    item['body'] = body
+    
+    return item
+    
 
 ### Main functions ###
-def render(args):
+def render():
     """ Render the posts and pages into a bunch of HTML files """
     
-    if os.path.isdir('output'):
+    if os.path.isdir(OUTPUT_PATH):
         try:
-            shutil.rmtree('output')
+            shutil.rmtree(OUTPUT_PATH)
         except Exception as e:
             print("Unable to delete and recreate output folder. Please delete it by hand and try again.")
             print("Error: " + unicode(e))
             quit(-1)
-    os.mkdir('output')
+    os.mkdir(OUTPUT_PATH)
     
     # Gather up the posts
     posts = list()
     
     if os.path.isdir('_posts'):
     	for file in os.listdir('_posts'):
-    		data = list()
-    		for doc in yaml.load_all(open(file)):
-    			data.append(doc)
-    		
-    		post = data[0]
-    		post['body'] = data[-1:]
-    		
+    	    post = read_header(open('_posts/' + file))
+    	    
     		# Might as well validate while we're here
     		if post['body'] == data[0]:
     			print("Error: " + file + " has no post body. Skipping.")
@@ -94,12 +110,7 @@ def render(args):
     
     if os.path.isdir('_pages'):
     	for file in os.listdir('_pages'):
-    		data = list()
-    		for doc in yaml.load_all(open(file)):
-    			data.append(doc)
-    		
-    		page = data[0]
-    		page['body'] = data[-1:]
+    		page = read_header(open('_pages/' + file))
     		
     		# Let's validate this guy
     		if page['body'] == data[0]:
@@ -114,15 +125,29 @@ def render(args):
 			# Everything went better than expected.
 			pages.append(post)
 	
+	# Let's sort these pages out so they show up right
+	# First in alpha order, then by parent/child
+	# Children with a non-existant parent get orphaned. Poor bastards.
 	sorted_pages = sorted(pages, key=itemgetter('title'))
+
+	pages = list()
+	for page in sorted_pages:
+		if page.get('parent') is None:
+			pages.append(page)
+
+			for possible_child in sorted_pages:
+				parent = possible_child.get('parent')
+				if parent is not None and parent == page['title']:
+					pages.append(page)
+			
+	
 
     
     # Render the posts as individual pages
     template = jenv.get_template('post.html')
     for post in posts:
     	date = datetime.strptime(post['date'], "%Y-%m-%d")
-        post['url'] = "/" + str(date.year) + "/" + str(date.month) + "/"
-        				+ str(post['id']) + ".html"
+        post['url'] = "/" + str(date.year) + "/" + str(date.month) + "/" + str(post['id']) + ".html"
         
         html = template.render(post=post, pages=sorted_pages)
         file_write("output" + post['url'])
@@ -152,31 +177,13 @@ def render(args):
     template = jenv.get_template('page.html')
     for page in pages:
         html = template.render(page=page, pages=sorted_pages)
-        file_write(outdir + page['url'] , html)
+        file_write(outdir + page['url'], html)
         
     # Finally, copy all static content over
     shutil.copytree('_media', 'output/media/')
 
     print("\nDone rendering! Check out output/index.html\n")
 
-def main():
-    try:
-        cmd = sys.argv[1]
-    except:
-        print("You need to specify a command.")
-        print("Valid commands include: init, post, list, rm, render")
-        quit(-1)
-
-    args = sys.argv[2:]
-
-    if cmd == "render":
-        render(args)
-    else:
-        print("\n\nInvalid command!")
-
-    # Everything must have gone quite swimmingly
-    quit(0)
-
-
 if __name__ == "__main__":
-    main()
+    render()
+    quit(0)

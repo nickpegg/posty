@@ -1,2 +1,3 @@
 posts.db
 templates/*.html
+.DS_Store

@@ -15,7 +15,7 @@
             <div id="menu">
                 <h1>Menu</h1>
                 <ul>
-                {% for p in pages %}
+                {% for p in sorted_pages %}
                     {% if p.parent == None %}
                         <li class="item"><a href="{{p.href}}">{{p.title}}</a></li>
                     {% else %}
