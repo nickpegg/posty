@@ -153,9 +153,7 @@ def render():
                     pages.append(page)
             
     # Let's sort the posts by date
-
     posts = sorted(posts, key=itemgetter('date'))
-
     posts.reverse()
     
     # Render the posts as individual pages
@@ -191,27 +189,27 @@ def render():
         else:
             file_write(OUTPUT_PATH + "posts" + str(start) + ".html", html)
 
-	# Render an RSS feed of the last 10 posts
-	rss_items = list()
-	for post in posts[:10]:
-		item = rss2.RSSItem(
-			title = post.get('title'),
-			link = post.get('url'),
-			description = render_markdown(post.get('body')),
-			guid = rss2.Guid(post.get('url')),
-			pubDate = datetime.datetime.combine(post.get('date'), datetime.time())
-		)
-		rss_items.append(item)
-		
-	feed = rss2.RSS2(
-		title = SITE_TITLE,
-		link = SITE_URL,
-		description = SITE_DESC,
-		lastBuildDate = datetime.datetime.now(),
-		items = rss_items
+    # Render an RSS feed of the last 10 posts
+    rss_items = list()
+    for post in posts[:10]:
+        item = rss2.RSSItem(
+	    title = post.get('title'),
+            link = post.get('url'),
+            description = render_markdown(post.get('body')),
+            guid = rss2.Guid(post.get('url')),
+            pubDate = datetime.datetime.combine(post.get('date'), datetime.time())
 	)
+        rss_items.append(item)
+		
+    feed = rss2.RSS2(
+        title = SITE_TITLE,
+        link = SITE_URL,
+        description = SITE_DESC,
+        lastBuildDate = datetime.datetime.now(),
+        items = rss_items
+    )
 	
-	feed.write_xml(open(OUTPUT_PATH + 'feed.rss', 'w'))
+    feed.write_xml(open(OUTPUT_PATH + 'feed.rss', 'w'))
 
     # Render the pages
     template = jenv.get_template('page.html')
