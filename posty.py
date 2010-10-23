@@ -61,7 +61,10 @@ def file_write(filename, html):
         print("Unable to write file: " + str(e))
         
 def read_header(file):
+    item = None
+    
     contents = file.read()
+    
     try:
         matches = re.match('(---(?:\r?\n)+(?:.*(?:\r?\n))+)---(?:\r?\n)((.*(?:\r?\n)?)+)', contents, re.MULTILINE).groups()
         body = ''
@@ -69,18 +72,21 @@ def read_header(file):
         header = matches[0]
         for m in matches[1:]:
             body += m
+            
+        item = yaml.load(header)
     except Exception as e:
         print("The header in " + file.name + " is screwey. Fix it.")
         print("Error: " + str(e))
         quit(-1)
         
-    item = yaml.load(header)
     item['body'] = body
     
     return item
     
 def slugify(text):
-    return str(text).strip().lower().replace(' ', '_')
+    """ This hardly covers many cases, but it covers what I've come across.
+    HELLLOOOOO lazy programmer. """
+    return str(text).strip().lower().replace(' ', '_').replace('#', '_')
     
 
 ### Main functions ###
@@ -147,11 +153,16 @@ def render():
         if page.get('parent') is None:
             pages.append(page)
 
-            for possible_child in sorted_pages:
+            # Stupid programming, but screw it, I'm only going one child deep.
+            for possible_child in sorted_pages: 
                 parent = possible_child.get('parent')
-                if parent is not None and parent == page['title']:
-                    pages.append(page)
-            
+                
+                if parent is not None and parent == page.get('title'):
+                    if possible_child in pages:
+                        pages.remove(possible_child)
+                        
+                    pages.append(possible_child)
+
     # Let's sort the posts by date
     posts = sorted(posts, key=itemgetter('date'))
     posts.reverse()
@@ -165,8 +176,12 @@ def render():
         # Let's make sure that the directories exist
         if not os.path.isdir(OUTPUT_PATH + os.path.dirname(post['url'])):
             os.makedirs(OUTPUT_PATH + os.path.dirname(post['url'])) 
-        
-        html = template.render(post=post, pages=sorted_pages)
+        try:
+            html = template.render(post=post, pages=pages)
+        except Exception as e:
+            print("Problem rendering the post " + str(post.get('title')))
+            print(str(e))
+
         file_write(OUTPUT_PATH + post['url'], html)
 
     # Render the posts as grouped pages
@@ -180,12 +195,15 @@ def render():
 
         if len(posts) - start <= PER_PAGE:
             next_page = None
+
         
         html = template.render(posts=posts[start:(start+PER_PAGE-1)],
-            pages=sorted_pages, prev_page=prev_page, next_page= next_page)
+            pages=pages, prev_page=prev_page, next_page= next_page)
+        
         
         if start == 0:
             file_write(OUTPUT_PATH + "index.html", html)
+            file_write(OUTPUT_PATH + "posts" + str(start) + ".html", html)
         else:
             file_write(OUTPUT_PATH + "posts" + str(start) + ".html", html)
 
@@ -220,8 +238,13 @@ def render():
         # Let's make sure that the directories exist
         if not os.path.isdir(OUTPUT_PATH + os.path.dirname(page['url'])):
             os.makedirs(OUTPUT_PATH + os.path.dirname(page['url']))
-        
-        html = template.render(page=page, pages=sorted_pages)
+
+        try:
+            html = template.render(page=page, pages=pages)
+        except Exception as e:
+            print("Something bad happened while trying to render page " + str(page.get('title')))
+            print(str(e))
+
         file_write(OUTPUT_PATH + page['url'], html)
         
     # Finally, copy all static content over
