@@ -5,9 +5,8 @@ Posty
 Written by Nick Pegg
 http://github.com/nickpegg/posty/
 
-Very simple static blog generator.
+Very simple static site generator.
 Takes in markdown files, spits out a website.
-Invoked via command line with a few commands.
 '''
 
 # Various settings
