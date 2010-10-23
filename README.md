@@ -5,7 +5,7 @@ jinja2 for templating. It's based on the concepts of blog posts and static
 pages. All metadata is stored as a YAML header (see exmaple files).
 
 A live version of what Posty produces can be found at 
-[http://posty.nickpegg.com/](http://posty.nickpegg.com/)
+[http://nickpegg.com/](http://nickpegg.com/)
 
 I wrote this over the course of a couple of evenings, so I make no claims 
 about the quality of this code. I wrote this for my own use after all. If you
