@@ -2,7 +2,7 @@
 
 Posty is a simple website generation tool using markdown for formatting and 
 jinja2 for templating. It's based on the concepts of blog posts and static
-pages. All metadata is stored as a YAML header (see exmaple files).
+pages. All metadata is stored as a YAML header (see example files).
 
 A live version of what Posty produces can be found at 
 [http://nickpegg.com/](http://nickpegg.com/)
