@@ -2,5 +2,3 @@ Jinja2>=2.6
 PyRSS2Gen>=1.1
 PyYAML>=3.10
 markdown2>=2.1.0
-wsgiref>=0.1.2
-
