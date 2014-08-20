@@ -211,9 +211,8 @@ def render():
     for post in posts[:10]:
         item = rss2.RSSItem(
 	    title = post.get('title'),
-            link = post.get('url'),
-            description = render_markdown(post.get('body')),
-            guid = rss2.Guid(post.get('url')),
+            link = SITE_URL + post.get('url'),
+            guid = rss2.Guid(SITE_URL + post.get('url')),
             pubDate = datetime.datetime.combine(post.get('date'), datetime.time())
 	)
         rss_items.append(item)
