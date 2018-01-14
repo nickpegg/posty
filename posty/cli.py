@@ -3,6 +3,7 @@ import os
 import shutil
 
 from .site import Site
+from .importers import Posty1Importer
 
 
 @click.group()
@@ -64,8 +65,9 @@ def posty1(path):
     """
     Import a Posty 1.x site from PATH
     """
-    click.echo(path)
-    # TODO: write this
+    click.echo('Importing from {}...'.format(path))
+    Posty1Importer(Site(), path).run()
+    click.echo('Done! You will need to make sure to update your templates')
 
 
 if __name__ == '__main__':
