@@ -3,6 +3,8 @@ python:
   - 2.7
   - 3.5
   - 3.6
+cache: pip
+
 install:
   - pip install -r requirements.dev.txt
 script:
