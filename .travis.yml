@@ -7,6 +7,4 @@ python:
 install:
   - pip install -r requirements.dev.txt
 script:
-  - pycodestyle posty
-  - flake8 posty
-  - pytest
+  - make test
