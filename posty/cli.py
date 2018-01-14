@@ -67,7 +67,12 @@ def posty1(path):
     """
     click.echo('Importing from {}...'.format(path))
     Posty1Importer(Site(), path).run()
-    click.echo('Done! You will need to make sure to update your templates')
+    click.echo('Done!')
+    click.echo((
+        "In each of your posts, I've made blurbs using the first paragraph. "
+        'Adjust to your own taste.'
+    ))
+    click.echo('You will also need to make sure to update your templates.')
 
 
 if __name__ == '__main__':
