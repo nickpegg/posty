@@ -1,5 +1,3 @@
-import pytest
-
 from posty import util
 
 
