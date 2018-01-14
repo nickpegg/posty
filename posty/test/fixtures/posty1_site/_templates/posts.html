@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+	Posts
+{% endblock %}
+
+{% block content %}
+    {% for p in posts %}
+        <div class="post">
+            <a class="posttitle" href="{{p.href}}">{{p.title}}</a>
+            <span class="info">Posted on {{p.date}}</span>
+            {{p.body|markdown}}			
+        </div>
+    {% endfor %}
+{% endblock %}
