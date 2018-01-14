@@ -31,6 +31,7 @@ Directories:
 - static -> Static files go here
     """)
 
+
 @cli.command()
 @click.option(
     '-o',
