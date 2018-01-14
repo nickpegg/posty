@@ -1,0 +1,6 @@
+.cache
+dist
+*pyc
+__pycache__
+MANIFEST
+*.egg-info

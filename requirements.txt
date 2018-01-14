@@ -1,0 +1,4 @@
+awesome-slugify~=1.6.5
+click~=6.7
+pytest~=3.3.2
+PyYAML~=3.12
