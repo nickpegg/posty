@@ -1,9 +1,15 @@
-import collections.abc
 import os.path
+import sys
 import yaml
 
 
-class Config(collections.abc.MutableMapping):
+if sys.version_info >= (3, 3):
+    from collections.abc import MutableMapping
+else:
+    from collections import MutableMapping
+
+
+class Config(MutableMapping):
     def __init__(self, path):
         self.path = path
         self.config = {}
