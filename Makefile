@@ -1,4 +1,4 @@
 test:
-	pycodestyle posty
-	flake8 posty
+	pycodestyle posty tests
+	flake8 posty tests
 	pytest
