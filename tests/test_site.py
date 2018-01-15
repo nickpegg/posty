@@ -1,13 +1,24 @@
+import json
 import os.path
 
-from posty.site import Site
+from .fixtures import site  # noqa
 
 
-# Site path that points to the skeleton site
-# TODO: make this part of a site fixture instead
-SITE_PATH = os.path.join(os.path.dirname(__file__), '../posty/skel')
+def test_site_loads_config(site):   # noqa
+    assert site.config['title'] == 'Test website'
 
 
-def test_site_loads_config():
-    s = Site(SITE_PATH)
-    assert s.config['title'] == 'My website'
+def test_render_json(site):     # noqa
+    """
+    Verify that Site.render() spits out a valid JSON file
+    """
+    site.load()
+    site.render()
+
+    json_path = os.path.join(site.site_path, 'build', 'site.json')
+    blob = json.load(open(json_path))
+    assert blob['title'] == 'Test website'
+
+    assert len(blob['pages']) > 0
+    assert len(blob['posts']) > 0
+    assert len(blob['tags']) > 0

@@ -18,5 +18,14 @@ def empty_posty_site():
     shutil.rmtree(path)
 
 
-# TODO: Create a `posty_site` fixture that is a copy of the fixture sitting
-# inside a tempdir. That way the fixture files are read-only.
+@pytest.fixture
+def site():
+    fixture_path = os.path.join(os.path.dirname(__file__), 'site')
+
+    path = os.path.join(tempfile.mkdtemp(suffix='posty-test'), 'site')
+    site = Site(path)
+    shutil.copytree(fixture_path, path)
+
+    yield site
+
+    shutil.rmtree(path)

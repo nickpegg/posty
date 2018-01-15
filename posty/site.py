@@ -2,6 +2,7 @@ from collections import Counter
 import copy
 import json
 import os.path
+import shutil
 import yaml
 
 from .config import Config
@@ -28,8 +29,23 @@ class Site(object):
             self._config.load()
         return self._config
 
+    def init(self):
+        """
+        Initialize a new Posty site at the gien path
+        """
+        skel_path = os.path.join(os.path.dirname(__file__), 'skel')
+        for thing in os.listdir(skel_path):
+            src = os.path.join(skel_path, thing)
+            dst = os.path.join(self.site_path, thing)
+            if os.path.exists(dst):
+                print("{} already exists, not overwriting".format(thing))
+            else:
+                if os.path.isdir(src):
+                    shutil.copytree(src, dst)
+                elif os.path.isfile(src):
+                    shutil.copy(src, dst)
+
     def build(self, output_path='build'):
-        raise NotImplementedError
         self.load()
         self.render()
 
@@ -37,6 +53,8 @@ class Site(object):
         """
         Load the site from files on disk into our internal representation
         """
+        self.payload['title'] = self.config['title']
+        self.payload['description'] = self.config['description']
         self._load_pages()
         self._load_posts()
 
@@ -97,7 +115,16 @@ class Site(object):
         """
         Renders the site as JSON and HTML
         """
-        raise NotImplementedError   # TODO: implement
+        output_dir = os.path.join(self.site_path, 'build')
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+
+        # Dump JSON
+        json_path = os.path.join(output_dir, 'site.json')
+        with open(json_path, 'w') as f:
+            f.write(self.to_json())
+
+        # Render all of the HTML
 
     def post(self, slug):
         """
