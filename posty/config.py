@@ -22,6 +22,7 @@ class Config(MutableMapping):
         """
         if not os.path.exists(self.path):
             raise InvalidConfig(
+                self,
                 'Unable to read config at {}'.format(self.path)
             )
 

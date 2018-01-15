@@ -1,6 +1,4 @@
 import click
-import os
-import shutil
 
 from .site import Site
 from .importers import Posty1Importer
@@ -16,12 +14,8 @@ def init():
     """
     Initialize a Posty site
     """
-    skel_path = os.path.join(os.path.dirname(__file__), 'skel')
-
-    for d in os.listdir(skel_path):
-        src = os.path.join(skel_path, d)
-        if not os.path.exists(d):
-            shutil.copytree(src, d)
+    site = Site()
+    site.init()
 
     click.echo('Posty initialized!')
     click.echo("""
