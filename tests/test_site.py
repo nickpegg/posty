@@ -15,7 +15,7 @@ def test_render_json(site):     # noqa
     site.load()
     site.render()
 
-    json_path = os.path.join(site.site_path, 'site.json')
+    json_path = os.path.join(site.site_path, 'build', 'site.json')
     blob = json.load(open(json_path))
     assert blob['title'] == 'Test website'
 

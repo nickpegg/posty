@@ -115,8 +115,12 @@ class Site(object):
         """
         Renders the site as JSON and HTML
         """
+        output_dir = os.path.join(self.site_path, 'build')
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+
         # Dump JSON
-        json_path = os.path.join(self.site_path, 'site.json')
+        json_path = os.path.join(output_dir, 'site.json')
         with open(json_path, 'w') as f:
             f.write(self.to_json())
 
