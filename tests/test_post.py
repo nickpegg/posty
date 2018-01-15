@@ -19,22 +19,29 @@ def post(config):
     return Post.from_yaml(contents, config=config)
 
 
-def test_validation(post):
-    post.validate()     # Should not raise an exception
+class TestValidation(object):
+    def test_basic_case(self, post):
+        post.validate()     # Should not raise an exception
 
-    assert post['date'] == datetime.date(2017, 1, 14)
-    assert post['title'] == 'Multi-paragraph Post'
-    assert post['slug'] == 'multi-paragraph-post'
-    assert sorted(post['tags']) == ['blah', 'test']
+        assert post['date'] == datetime.date(2017, 1, 14)
+        assert post['title'] == 'Multi-paragraph Post'
+        assert post['slug'] == 'multi-paragraph-post'
+        assert sorted(post['tags']) == ['blah', 'test']
 
+    def test_no_title(self, post):
+        del post['title']
+        with pytest.raises(InvalidObject):
+            post.validate()
 
-def test_no_title(post):
-    del post['title']
-    with pytest.raises(InvalidObject):
+    def test_no_tags(self, post):
+        del post['tags']
         post.validate()
+        assert post['tags'] == []
 
 
-def test_no_tags(post):
-    del post['tags']
-    post.validate()
-    assert post['tags'] == []
+def test_url(post):
+    year = post['date'].year
+    month = post['date'].month
+    expected_url = '/test/{}/{:02d}/{}/'.format(year, month, post['slug'])
+
+    assert post.url() == expected_url

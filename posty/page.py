@@ -1,3 +1,7 @@
+from future.standard_library import install_aliases
+install_aliases()   # noqa
+
+from urllib.parse import urljoin
 import yaml
 
 from .exceptions import InvalidObject
@@ -27,5 +31,6 @@ class Page(Model):
         self.payload.setdefault('parent')
         self.payload.setdefault('slug', slugify(self.payload['title']))
 
-    def url():
-        raise NotImplementedError   # TODO
+    def url(self):
+        path = '{}/'.format(self.payload['slug'])
+        return urljoin(self.config['base_url'], path)

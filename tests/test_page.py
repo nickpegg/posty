@@ -18,24 +18,29 @@ def page(config):
     return Page.from_yaml(contents, config=config)
 
 
-def test_validation(page):
-    page.validate()     # Should not raise an exception
+class TestValidation(object):
+    def test_basic_case(self, page):
+        page.validate()     # Should not raise an exception
 
-    assert 'parent' in page.keys()
-    assert page['title'] == 'Test'
-    assert page['slug'] == 'test'
+        assert 'parent' in page.keys()
+        assert page['title'] == 'Test'
+        assert page['slug'] == 'test'
 
+    def test_no_title(self, page):
+        del page['title']
+        with pytest.raises(InvalidObject):
+            page.validate()
 
-def test_no_title(page):
-    del page['title']
-    with pytest.raises(InvalidObject):
+    def test_no_parent(self, page):
+        del page['parent']
+        assert 'parent' not in page.payload.keys()
+
         page.validate()
 
+        assert 'parent' in page.payload.keys()
 
-def test_no_parent(page):
-    del page['parent']
-    assert 'parent' not in page.payload.keys()
 
-    page.validate()
+def test_url(page):
+    expected_url = '/test/{}/'.format(page['slug'])
 
-    assert 'parent' in page.payload.keys()
+    assert page.url() == expected_url
