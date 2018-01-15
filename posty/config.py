@@ -2,6 +2,8 @@ import os.path
 import sys
 import yaml
 
+from .exceptions import InvalidConfig
+
 
 if sys.version_info >= (3, 3):
     from collections.abc import MutableMapping
@@ -19,9 +21,12 @@ class Config(MutableMapping):
         Load the YAML config from the given path, return the config object
         """
         if not os.path.exists(self.path):
-            raise RuntimeError('Unable to read config at {}'.format(self.path))
+            raise InvalidConfig(
+                'Unable to read config at {}'.format(self.path)
+            )
 
         self.config = yaml.load(open(self.path).read())
+        self.clean_config()
         return self
 
     def __len__(self):
@@ -38,3 +43,20 @@ class Config(MutableMapping):
 
     def __delitem__(self, key):
         del self.config[key]
+
+    def clean_config(self):
+        """
+        Validate and clean the already-loaded config
+        """
+        c = self.config
+
+        if not c.get('title'):
+            raise InvalidConfig(self, 'You must set a title')
+
+        c.setdefault('description', '')
+
+        c.setdefault('num_top_tags', 5)
+        c.setdefault('num_posts_per_page', 5)
+
+        c.setdefault('compat', {})
+        c['compat'].setdefault('redirect_posty1_urls', False)

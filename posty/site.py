@@ -5,6 +5,7 @@ import os.path
 import yaml
 
 from .config import Config
+from .exceptions import PostyError, MalformedInput
 from .util import slugify
 
 
@@ -75,7 +76,7 @@ class Site(object):
                 post['blurb'] = parts[1]
                 post['body'] = "\n".join(parts[1:])
             else:
-                raise RuntimeError(
+                raise MalformedInput(
                     "Got too many YAML documents in {}".format(filename)
                 )
 
@@ -108,14 +109,14 @@ class Site(object):
         :returns:
             A post dict
 
-        :raises RuntimeError:
+        :raises PostyError:
             if no post could be found
         """
         for post in self.payload['posts']:
             if slug == slugify(post['title']):
                 return post
         else:
-            raise RuntimeError(
+            raise PostyError(
                 'Unable to find post {}. Available posts: {}'.format(
                     slug,
                     [slugify(p['title']) for p in self.payload['pages']]
@@ -132,14 +133,14 @@ class Site(object):
         :returns:
             A page dict
 
-        :raises RuntimeError:
+        :raises PostyError:
             if no page could be found
         """
         for page in self.payload['pages']:
             if slug == page.get('slug') or slug == slugify(page['title']):
                 return page
         else:
-            raise RuntimeError(
+            raise PostyError(
                 'Unable to find post {}. Available posts: {}'.format(
                     slug,
                     [p.get('slug') or slugify(p['title'])
