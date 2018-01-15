@@ -1,0 +1,9 @@
+date: 2017-01-14
+tags: []
+title: Multi-paragraph Post
+---
+This is a post that has multiple paragraphs, where the first paragraph should get converted into a blurb.
+---
+This is the second paragraph, which should be hidden from the blurb.
+
+And a third paragraph, also outside the blurb.

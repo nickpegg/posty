@@ -1,0 +1,11 @@
+date: 2010-08-31
+name: Test Post
+tags: []
+---
+## This is a test post
+Nothing to see here, move along.
+---
+* Or is there?
+* No, wait, this is just a list.
+
+		echo "crap."

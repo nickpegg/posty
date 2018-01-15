@@ -1,4 +1,5 @@
 from collections import Counter
+import copy
 import os.path
 import yaml
 
@@ -47,6 +48,7 @@ class Site(object):
 
             page['body'] = body.strip()
             page.setdefault('parent')
+            page.setdefault('slug', slugify(page['title']))
 
             pages.append(page)
         self.payload['pages'] = sorted(pages, key=lambda x: x['title'].lower())
@@ -62,8 +64,8 @@ class Site(object):
             parts = contents.split("---\n")
 
             post = yaml.load(parts[0])
-            post['date'] = post['date'].isoformat()
             post.setdefault('tags', [])
+            post.setdefault('slug', slugify(post['title']))
 
             if len(parts[1:]) == 1:
                 post['blurb'] = parts[1]
@@ -143,3 +145,11 @@ class Site(object):
                         for p in self.payload['title']]
                 )
             )
+
+    def to_json(self):
+        payload = copy.deepcopy(self.payload)
+
+        for post in payload['posts']:
+            post['date'] = post['date'].isoformat()
+
+        return json.dumps(payload)
