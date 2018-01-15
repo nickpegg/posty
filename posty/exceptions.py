@@ -8,7 +8,7 @@ class InvalidConfig(PostyError):
             config_obj.path,
             reason
         )
-        super(__class__, self).__init__(msg)
+        super(self.__class__, self).__init__(msg)
 
 
 class UnableToImport(PostyError):
