@@ -17,3 +17,7 @@ class UnableToImport(PostyError):
 
 class MalformedInput(PostyError):
     pass
+
+
+class InvalidObject(PostyError):
+    pass

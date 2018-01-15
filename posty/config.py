@@ -12,7 +12,7 @@ else:
 
 
 class Config(MutableMapping):
-    def __init__(self, path):
+    def __init__(self, path='config.yml'):
         self.path = path
         self.config = {}
 
