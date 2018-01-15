@@ -8,6 +8,8 @@ import os
 import shutil
 import yaml
 
+from .exceptions import UnableToImport
+
 
 class Importer(object):
     __metaclass__ = abc.ABCMeta
@@ -36,10 +38,6 @@ class Importer(object):
                 raise UnableToImport(
                     '{} exists but is not a directory'.format(path)
                 )
-
-
-class UnableToImport(RuntimeError):
-    pass
 
 
 class Posty1Importer(Importer):
