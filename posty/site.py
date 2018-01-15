@@ -63,7 +63,7 @@ class Site(object):
         page_dir = os.path.join(self.site_path, 'pages')
         for filename in os.listdir(page_dir):
             contents = open(os.path.join(page_dir, filename)).read()
-            _, meta_yaml, body = contents.split("---\n")
+            meta_yaml, body = contents.split("---\n")
             page = yaml.load(meta_yaml)
 
             page['body'] = body.strip()

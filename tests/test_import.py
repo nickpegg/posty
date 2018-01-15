@@ -58,12 +58,11 @@ class TestPosty1Importer(object):
         importer = importer_with_directories
         importer.import_pages()
 
-        src_path = os.path.join(importer.src_path, '_pages')
-        dst_path = os.path.join(importer.site.site_path, 'pages')
-        for f in os.listdir(src_path):
-            src_file = open(os.path.join(src_path, f)).read()
-            dst_file = open(os.path.join(dst_path, f)).read()
-            assert src_file == dst_file
+        # Ensure `url` is not set on any pages
+        site = importer.site
+        site._load_pages()
+        for page in site.payload['pages']:
+            assert page.get('url') is None
 
     def test_import_posts(self, importer_with_directories):
         """

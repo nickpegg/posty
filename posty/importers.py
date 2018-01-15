@@ -59,7 +59,16 @@ class Posty1Importer(Importer):
         self._copy_files('_templates', 'templates')
 
     def import_pages(self):
-        self._copy_files('_pages', 'pages')
+        src_dir = os.path.join(self.src_path, '_pages')
+        dst_dir = os.path.join(self.site.site_path, 'pages')
+
+        for page in os.listdir(src_dir):
+            src_file = os.path.join(src_dir, page)
+            dst_file = os.path.join(dst_dir, page)
+
+            new_page = self._convert_page(open(src_file).read())
+            with open(dst_file, 'w') as fh:
+                fh.write(new_page)
 
     def import_posts(self):
         src_dir = os.path.join(self.src_path, '_posts')
@@ -98,6 +107,25 @@ class Posty1Importer(Importer):
             else:
                 print(("  Looks like {} isn't a file nor dir, "
                        "not copying.").format(src_path))
+
+    def _convert_page(self, old_page):
+        """
+        Converts an old Posty 1.x page into a new-style one. Notably just
+        throws away any existing `url`
+        """
+        old_page = old_page.replace("\r\n", "\n")
+        docs = old_page.split("---\n")
+        new_page = ''
+
+        meta = yaml.load(docs[1])
+        if 'url' in meta.keys():
+            del meta['url']
+        new_page += yaml.dump(meta, default_flow_style=False)
+
+        new_page += "---\n"
+        new_page += docs[2]
+
+        return new_page
 
     def _convert_post(self, old_post):
         """
