@@ -22,3 +22,27 @@ def test_render_json(site):     # noqa
     assert len(blob['pages']) > 0
     assert len(blob['posts']) > 0
     assert len(blob['tags']) > 0
+
+
+def test_page_sorting(site):    # noqa
+    """
+    Ensure pages are sorted alphabetically by their title
+    """
+    last = ''
+    for page in site.payload['pages']:
+        assert last < page['title']
+        last = page['title']
+
+
+def test_post_sorting(site):    # noqa
+    """
+    Ensure posts are sorted in reverse chronological order
+    """
+    last = None
+    for post in site.payload['posts']:
+        if last is None:
+            last = post['date']
+            next
+
+        assert last >= post['date']
+        last = post['date']

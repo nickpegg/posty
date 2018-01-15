@@ -1,5 +1,6 @@
 title: Test website
 description: Testy testy test test
+base_url: /test/
 
 num_top_tags: 5
 num_posts_per_page: 5

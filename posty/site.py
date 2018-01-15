@@ -3,10 +3,11 @@ import copy
 import json
 import os.path
 import shutil
-import yaml
 
 from .config import Config
-from .exceptions import PostyError, MalformedInput
+from .exceptions import PostyError
+from .page import Page
+from .post import Post
 from .util import slugify
 
 
@@ -63,14 +64,8 @@ class Site(object):
         page_dir = os.path.join(self.site_path, 'pages')
         for filename in os.listdir(page_dir):
             contents = open(os.path.join(page_dir, filename)).read()
-            meta_yaml, body = contents.split("---\n")
-            page = yaml.load(meta_yaml)
+            pages.append(Page.from_yaml(contents, config=self._config))
 
-            page['body'] = body.strip()
-            page.setdefault('parent')
-            page.setdefault('slug', slugify(page['title']))
-
-            pages.append(page)
         self.payload['pages'] = sorted(pages, key=lambda x: x['title'].lower())
 
     def _load_posts(self):
@@ -81,30 +76,11 @@ class Site(object):
         post_dir = os.path.join(self.site_path, 'posts')
         for filename in os.listdir(post_dir):
             contents = open(os.path.join(post_dir, filename)).read()
-            parts = contents.split("---\n")
-
-            post = yaml.load(parts[0])
-            post.setdefault('tags', [])
-            post.setdefault('slug', slugify(post['title']))
-
-            if len(parts[1:]) == 1:
-                post['blurb'] = parts[1]
-                post['body'] = parts[1]
-            elif len(parts[1:]) == 2:
-                post['blurb'] = parts[1]
-                post['body'] = "\n".join(parts[1:])
-            else:
-                raise MalformedInput(
-                    "Got too many YAML documents in {}".format(filename)
-                )
-
-            post['blurb'] = post['blurb'].strip()
-            post['body'] = post['body'].strip()
-
-            for tag in post['tags']:
-                tags.append(tag)
+            post = Post.from_yaml(contents, config=self._config)
 
             posts.append(post)
+            tags.extend(post['tags'])
+
         self.payload['posts'] = sorted(posts, key=lambda x: x['date'],
                                        reverse=True)
 
@@ -140,7 +116,8 @@ class Site(object):
             if no post could be found
         """
         for post in self.payload['posts']:
-            if slug == slugify(post['title']):
+            post_slug = post['slug'] or slugify(post['title'])
+            if slug == post_slug:
                 return post
         else:
             raise PostyError(
@@ -164,7 +141,8 @@ class Site(object):
             if no page could be found
         """
         for page in self.payload['pages']:
-            if slug == page.get('slug') or slug == slugify(page['title']):
+            page_slug = page.get('slug') or slug == slugify(page['title'])
+            if slug == page_slug:
                 return page
         else:
             raise PostyError(
@@ -177,6 +155,10 @@ class Site(object):
 
     def to_json(self):
         payload = copy.deepcopy(self.payload)
+
+        # Turn Post and Page objects into their dict representations
+        payload['posts'] = [p.as_dict() for p in payload['posts']]
+        payload['pages'] = [p.as_dict() for p in payload['pages']]
 
         for post in payload['posts']:
             post['date'] = post['date'].isoformat()

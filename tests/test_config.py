@@ -37,3 +37,8 @@ class TestCleanConfig(object):
         del config['compat']
         config.clean_config()
         assert config['compat']['redirect_posty1_urls'] is False
+
+    def test_no_base_url(self, config):
+        del config['base_url']
+        config.clean_config()
+        assert config['base_url'] == '/'

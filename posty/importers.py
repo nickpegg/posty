@@ -9,11 +9,10 @@ import shutil
 import yaml
 
 from .exceptions import UnableToImport
+from .model import ABC
 
 
-class Importer(object):
-    __metaclass__ = abc.ABCMeta
-
+class Importer(ABC):
     def __init__(self, site, src_path):
         """
         :param site:

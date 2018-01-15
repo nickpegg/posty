@@ -12,7 +12,7 @@ else:
 
 
 class Config(MutableMapping):
-    def __init__(self, path):
+    def __init__(self, path='config.yml'):
         self.path = path
         self.config = {}
 
@@ -55,6 +55,7 @@ class Config(MutableMapping):
             raise InvalidConfig(self, 'You must set a title')
 
         c.setdefault('description', '')
+        c.setdefault('base_url', '/')
 
         c.setdefault('num_top_tags', 5)
         c.setdefault('num_posts_per_page', 5)
