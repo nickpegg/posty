@@ -1,8 +1,13 @@
+from future.standard_library import install_aliases
+install_aliases()   # noqa
+
+from collections import defaultdict
 import jinja2
 import json
 import os
+from urllib.parse import urljoin
 
-from . import template_filters
+from . import template_filters, util
 
 # Route reference
 # /               Posts
@@ -13,14 +18,6 @@ from . import template_filters
 # /:year/:month/:slug/    Single post
 #
 # /:slug/         Page matching :slug
-
-
-# Paths to templates, relative to the site root dir
-TEMPLATES = {
-    'page': 'templates/page.html',
-    'post': 'templates/post.html',
-    'posts': 'templates/posts.html',
-}
 
 
 class Renderer(object):
@@ -52,6 +49,10 @@ class Renderer(object):
     def ensure_output_path(self):
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path)
+
+    def render_file(self, path, template, **kwargs):
+        with open(path, 'w') as f:
+            f.write(template.render(**kwargs))
 
     def render_site(self):
         """
@@ -98,20 +99,90 @@ class Renderer(object):
         with open(json_path, 'w') as f:
             f.write(json.dumps(payload))
 
+    def render_posts(self, posts, prefix=''):
+        """
+        Render a list of posts as sets of pages where each page has
+        ``num_posts_per_page`` posts. Each page of posts will be rendered to
+        the path page/:page/index.html relative to the Renderer output_path
+
+        If ``prefix`` is given, add that will be put in between the output_path
+        and page path. For example if the prefix is 'tags/foo/' then a page
+        path would look like 'tags/foo/page/:page/index.html'
+        """
+        if prefix and prefix[-1] != '/':
+            prefix += '/'
+
+        template = self.jinja_env.get_template('posts.html')
+        groups = util.bucket(posts, self.site._config['num_posts_per_page'])
+
+        base_page_url = self.site._config['base_url']
+        if prefix:
+            base_page_url = urljoin(base_page_url, prefix)
+        base_page_url = urljoin(base_page_url, 'page/')
+        print("DEBUG: base_page_url final: {}".format(base_page_url))
+
+        output_path = os.path.join(self.output_path, prefix)
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+        print("DEBUG: output path: {}".format(output_path))
+
+        # Render the first group as index.html
+        posts = groups.pop(0)
+        dst_file = os.path.join(output_path, 'index.html')
+        next_page_url = None
+        if len(groups) > 0:
+            next_page_url = urljoin(base_page_url, str(2) + '/')
+        self.render_file(dst_file, template, site=self.site.payload,
+                         posts=posts, next_page_url=next_page_url)
+
+        # Render the rest
+        last_page = len(groups) + 1
+        for page, posts in enumerate(groups, start=2):
+            dst_path = os.path.join(output_path, 'page', str(page) + '/')
+            if not os.path.exists(dst_path):
+                os.makedirs(dst_path)
+
+            dst_file = os.path.join(dst_path, 'index.html')
+
+            if page == 2:
+                prev_page_url = urljoin(self.site._config['base_url'], prefix)
+            else:
+                prev_page_url = urljoin(base_page_url, str(page - 1) + '/')
+            next_page_url = None
+            if page != last_page:
+                next_page_url = urljoin(base_page_url, str(page + 1) + '/')
+
+            self.render_file(
+                dst_file,
+                template,
+                site=self.site.payload,
+                posts=posts,
+                prev_page_url=prev_page_url,
+                next_page_url=next_page_url
+            )
+
     def render_site_posts(self):
         """
         Renders all of the multi-post pages, N per page
         """
-        # Bucket posts into lists of N length
-        pass
+        self.ensure_output_path()
+        self.render_posts(self.site.payload['posts'])
 
     def render_site_tags(self):
         """
         Renders all of the per-tag multi-post pages, N per page
         """
+        self.ensure_output_path()
+
         # Bucket all posts by tag
+        tag_buckets = defaultdict(list)
+        for post in self.site.payload['posts']:
+            for tag in post['tags']:
+                tag_buckets[tag].append(post)
+
         # For each tag, render pages of posts
-        pass
+        for tag, posts in tag_buckets.items():
+            self.render_posts(posts, prefix='tag/{}/'.format(tag))
 
     def render_page(self, page):
         """
@@ -126,8 +197,7 @@ class Renderer(object):
             os.makedirs(dst_dir)
         template = self.jinja_env.get_template('page.html')
 
-        with open(dst_file, 'w') as f:
-            f.write(template.render(site=self.site.payload, page=page))
+        self.render_file(dst_file, template, site=self.site.payload, page=page)
 
     def render_post(self, post):
         """
@@ -142,5 +212,4 @@ class Renderer(object):
             os.makedirs(dst_dir)
         template = self.jinja_env.get_template('post.html')
 
-        with open(dst_file, 'w') as f:
-            f.write(template.render(site=self.site.payload, post=post))
+        self.render_file(dst_file, template, site=self.site.payload, post=post)
