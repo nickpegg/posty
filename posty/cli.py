@@ -1,4 +1,6 @@
 import click
+import os
+import shutil
 
 from .site import Site
 from .renderer import Renderer
@@ -47,6 +49,9 @@ def build(output):
 
     renderer = Renderer(site, output_path=output)
     renderer.render_site()
+
+    # Finally, copy media into the build directory
+    shutil.copytree('media', os.path.join(output, 'media'))
 
 
 @cli.group(name='import')
