@@ -122,7 +122,7 @@ class Renderer(object):
         dst_dir = os.path.join(self.output_path, page.path_on_disk())
         dst_file = os.path.join(dst_dir, 'index.html')
 
-        os.makedirs(dst_dir, exist_ok=True)
+        os.makedirs(dst_dir)
         template = self.jinja_env.get_template('page.html')
 
         with open(dst_file, 'w') as f:
