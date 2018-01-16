@@ -52,6 +52,8 @@ class Site(object):
         """
         self.payload['title'] = self.config['title']
         self.payload['description'] = self.config['description']
+        self.payload['base_url'] = self.config['base_url']
+
         self._load_pages()
         self._load_posts()
 
