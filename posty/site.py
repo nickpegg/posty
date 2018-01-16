@@ -46,10 +46,6 @@ class Site(object):
                 elif os.path.isfile(src):
                     shutil.copy(src, dst)
 
-    def build(self, output_path='build'):
-        self.load()
-        self.render()
-
     def load(self):
         """
         Load the site from files on disk into our internal representation
@@ -86,21 +82,6 @@ class Site(object):
 
         # uniquify tags and sort by frequency (descending)
         self.payload['tags'] = [t for t, c in Counter(tags).most_common()]
-
-    def render(self, output_path='build'):
-        """
-        Renders the site as JSON and HTML
-        """
-        output_dir = os.path.join(self.site_path, 'build')
-        if not os.path.exists(output_dir):
-            os.mkdir(output_dir)
-
-        # Dump JSON
-        json_path = os.path.join(output_dir, 'site.json')
-        with open(json_path, 'w') as f:
-            f.write(self.to_json())
-
-        # Render all of the HTML
 
     def post(self, slug):
         """

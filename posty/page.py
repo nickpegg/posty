@@ -1,6 +1,7 @@
 from future.standard_library import install_aliases
 install_aliases()   # noqa
 
+import os.path
 from urllib.parse import urljoin
 import yaml
 
@@ -15,7 +16,12 @@ class Page(Model):
         """
         Return a Page from the given file_contents
         """
-        meta_yaml, body = file_contents.split("---\n")
+        parts = file_contents.split("---\n")
+        if not parts[0]:
+            # nothing before the first ---
+            parts.pop(0)
+
+        meta_yaml, body = parts
         payload = yaml.load(meta_yaml)
         payload['body'] = body.strip()
 
@@ -34,3 +40,6 @@ class Page(Model):
     def url(self):
         path = '{}/'.format(self.payload['slug'])
         return urljoin(self.config['base_url'], path)
+
+    def path_on_disk(self):
+        return self.payload['slug']

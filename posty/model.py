@@ -73,3 +73,10 @@ class Model(ABC, MutableMapping):
         Returns the URL path to this resource
         """
         raise NotImplementedError
+
+    @abc.abstractmethod
+    def path_on_disk(self):
+        """
+        Returns the relative path on disk to the object, for rendering purposes
+        """
+        raise NotImplementedError

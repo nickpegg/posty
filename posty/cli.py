@@ -1,6 +1,7 @@
 import click
 
 from .site import Site
+from .renderer import Renderer
 from .importers import Posty1Importer
 
 
@@ -42,7 +43,10 @@ def build(output):
     Build a Posty site as rendered HTML
     """
     site = Site()
-    site.build(output_path=output)
+    site.load()
+
+    renderer = Renderer(site, output_path=output)
+    renderer.render_site()
 
 
 @cli.group(name='import')
