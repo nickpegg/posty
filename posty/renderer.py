@@ -122,14 +122,25 @@ class Renderer(object):
         dst_dir = os.path.join(self.output_path, page.path_on_disk())
         dst_file = os.path.join(dst_dir, 'index.html')
 
-        os.makedirs(dst_dir)
+        if not os.path.exists(dst_dir):
+            os.makedirs(dst_dir)
         template = self.jinja_env.get_template('page.html')
 
         with open(dst_file, 'w') as f:
-            f.write(template.render(site=self.site, page=page))
+            f.write(template.render(site=self.site.payload, page=page))
 
     def render_post(self, post):
         """
         :param post: a Post object
         """
-        pass
+        self.ensure_output_path()
+
+        dst_dir = os.path.join(self.output_path, post.path_on_disk())
+        dst_file = os.path.join(dst_dir, 'index.html')
+
+        if not os.path.exists(dst_dir):
+            os.makedirs(dst_dir)
+        template = self.jinja_env.get_template('post.html')
+
+        with open(dst_file, 'w') as f:
+            f.write(template.render(site=self.site.payload, post=post))

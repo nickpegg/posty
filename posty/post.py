@@ -60,7 +60,7 @@ class Post(Model):
 
     def path_on_disk(self):
         return os.path.join(
-            self.payload['date'].year,
+            str(self.payload['date'].year),
             '{:02d}'.format(self.payload['date'].month),
             self.payload['slug'],
         )
