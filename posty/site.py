@@ -53,6 +53,7 @@ class Site(object):
         self.payload['title'] = self.config['title']
         self.payload['description'] = self.config['description']
         self.payload['base_url'] = self.config['base_url']
+        self.payload['num_top_tags'] = self.config['num_top_tags']
 
         self._load_pages()
         self._load_posts()
