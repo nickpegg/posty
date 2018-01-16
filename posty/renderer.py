@@ -1,4 +1,3 @@
-import copy
 import jinja2
 import json
 import os
@@ -50,6 +49,10 @@ class Renderer(object):
         filters['markdown'] = template_filters.markdown
         filters['media_url'] = template_filters.media_url_func(self.site)
 
+    def ensure_output_path(self):
+        if not os.path.exists(self.output_path):
+            os.makedirs(self.output_path)
+
     def render_site(self):
         """
         Given a Site object, render all of its components
@@ -67,6 +70,8 @@ class Renderer(object):
         self.render_site_json()
 
     def render_site_json(self):
+        self.ensure_output_path()
+
         json_path = os.path.join(self.output_path, 'site.json')
         payload = {
             'pages': [],
@@ -112,6 +117,8 @@ class Renderer(object):
         """
         :param page: a Page object
         """
+        self.ensure_output_path()
+
         dst_dir = os.path.join(self.output_path, page.path_on_disk())
         dst_file = os.path.join(dst_dir, 'index.html')
 
