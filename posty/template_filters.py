@@ -23,6 +23,6 @@ def media_url_func(site):
     img/my_picture.jpg -> /foo/media/img/my_picture.jpg
     """
     def media_url(path):
-        base_path = urljoin(site._config['base_url'], 'media')
+        base_path = urljoin(site.config['base_url'], 'media/')
         return urljoin(base_path, path)
     return media_url

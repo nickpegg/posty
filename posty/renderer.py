@@ -113,9 +113,9 @@ class Renderer(object):
             prefix += '/'
 
         template = self.jinja_env.get_template('posts.html')
-        groups = util.bucket(posts, self.site._config['num_posts_per_page'])
+        groups = util.bucket(posts, self.site.config['num_posts_per_page'])
 
-        base_page_url = self.site._config['base_url']
+        base_page_url = self.site.config['base_url']
         if prefix:
             base_page_url = urljoin(base_page_url, prefix)
         base_page_url = urljoin(base_page_url, 'page/')
@@ -145,7 +145,7 @@ class Renderer(object):
             dst_file = os.path.join(dst_path, 'index.html')
 
             if page == 2:
-                prev_page_url = urljoin(self.site._config['base_url'], prefix)
+                prev_page_url = urljoin(self.site.config['base_url'], prefix)
             else:
                 prev_page_url = urljoin(base_page_url, str(page - 1) + '/')
             next_page_url = None

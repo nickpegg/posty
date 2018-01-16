@@ -33,6 +33,7 @@ def site():
 
     path = os.path.join(tempfile.mkdtemp(suffix='posty-test'), 'site')
     site = Site(path)
+
     shutil.copytree(fixture_path, path)
 
     yield site
