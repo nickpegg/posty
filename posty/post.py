@@ -1,6 +1,7 @@
 from future.standard_library import install_aliases
 install_aliases()   # noqa
 
+import os.path
 from urllib.parse import urljoin
 import yaml
 
@@ -16,6 +17,9 @@ class Post(Model):
         Returns a Post from the given file_contents
         """
         parts = file_contents.split("---\n")
+        if not parts[0]:
+            # nothing before the first ---
+            parts.pop(0)
 
         post = yaml.load(parts[0])
 
@@ -53,3 +57,10 @@ class Post(Model):
             self.payload['slug']
         )
         return urljoin(self.config['base_url'], path)
+
+    def path_on_disk(self):
+        return os.path.join(
+            str(self.payload['date'].year),
+            '{:02d}'.format(self.payload['date'].month),
+            self.payload['slug'],
+        )

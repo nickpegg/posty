@@ -16,7 +16,7 @@
         <h1>Menu</h1>
         <ul>
         {% for p in site.pages %}
-          {% if p.parent is None %}
+          {% if p.parent == None %}
             <li class="item"><a href="/{{p.slug}}/">{{p.title}}</a></li>
           {% endif %}
         {% endfor %}

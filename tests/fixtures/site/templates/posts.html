@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  {% for p in site.posts %}
+  {% for p in posts %}
     <div class="post">
         <a class="posttitle" href="/{{p.date.year}}/{{p.date.month}}/{{p.slug}}">{{p.title}}</a>
       <span class="info">Posted on {{p.date}}</span>
