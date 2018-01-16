@@ -119,12 +119,10 @@ class Renderer(object):
         if prefix:
             base_page_url = urljoin(base_page_url, prefix)
         base_page_url = urljoin(base_page_url, 'page/')
-        print("DEBUG: base_page_url final: {}".format(base_page_url))
 
         output_path = os.path.join(self.output_path, prefix)
         if not os.path.exists(output_path):
             os.makedirs(output_path)
-        print("DEBUG: output path: {}".format(output_path))
 
         # Render the first group as index.html
         posts = groups.pop(0)
