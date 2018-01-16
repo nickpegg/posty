@@ -27,7 +27,7 @@ def bucket(_list, size):
     bucket([1,2,3,4,5], 2) -> [[1,2], [3,4], [5]]
     """
     buckets = []
-    _list = _list.copy()
+    _list = list(_list)
 
     while len(_list) > 0:
         bucket = _list[:size]
