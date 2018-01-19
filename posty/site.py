@@ -163,7 +163,7 @@ class Site(object):
         first_post = self.payload['posts'][-1]
         last_post = self.payload['posts'][0]
 
-        copyright = '© {start} - {end}, {author}'.format(
+        copyright = 'Copyright {start} - {end}, {author}'.format(
             author=self.config['author'],
             start=first_post['date'].year,
             end=last_post['date'].year

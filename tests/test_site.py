@@ -31,4 +31,4 @@ def test_post_sorting(site):    # noqa
 
 def test_copyright(site):   # noqa
     site.load()
-    assert site.copyright == '© 2010 - 2017, Jimbo Jawn'
+    assert site.copyright == 'Copyright 2010 - 2017, Jimbo Jawn'

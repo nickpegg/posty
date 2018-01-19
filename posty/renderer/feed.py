@@ -1,7 +1,8 @@
 import abc
-from datetime import datetime, time, timezone
+from datetime import datetime, time
 
 from feedgen.feed import FeedGenerator
+import pytz
 
 from .base import Renderer
 from .util import markdown
@@ -31,7 +32,7 @@ class FeedRenderer(Renderer):
         # Set pubDate to the last post's date
         pub_date = datetime.combine(
             self.site.payload['posts'][0]['date'],
-            time(tzinfo=timezone.utc),
+            time(tzinfo=pytz.utc),
         )
         self.feed.pubDate(pub_date)
 
@@ -50,7 +51,7 @@ class FeedRenderer(Renderer):
 
             pub_date = datetime.combine(
                 post['date'],
-                time(tzinfo=timezone.utc),
+                time(tzinfo=pytz.utc),
             )
             entry.published(pub_date)
 
