@@ -5,6 +5,10 @@ base_url: /
 num_top_tags: 5
 num_posts_per_page: 5
 
+feeds:
+  rss: True
+  atom: True
+
 # Backward compatibility tunables
 compat:
   redirect_posty1_urls: False

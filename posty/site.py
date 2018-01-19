@@ -8,6 +8,7 @@ from .config import Config
 from .exceptions import PostyError
 from .page import Page
 from .post import Post
+from .renderer import HtmlRenderer, JsonRenderer
 from .util import slugify
 
 
@@ -57,6 +58,19 @@ class Site(object):
 
         self._load_pages()
         self._load_posts()
+
+    def render(self, output_path='build'):
+        """
+        Render the site with the various renderers
+        """
+        HtmlRenderer(self, output_path=output_path).render_site()
+        JsonRenderer(self, output_path=output_path).render_site()
+
+        # TODO
+        # if self.config['feeds']['rss']:
+        #     RssRenderer(self, output_path=output_path).render_site()
+        # if self.config['feeds']['atom']:
+        #     AtomRenderer(self, output_path=output_path).render_site()
 
     def _load_pages(self):
         pages = []

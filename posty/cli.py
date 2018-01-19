@@ -3,7 +3,6 @@ import os
 import shutil
 
 from .site import Site
-from .renderer import Renderer
 from .importers import Posty1Importer
 
 
@@ -46,9 +45,7 @@ def build(output):
     """
     site = Site()
     site.load()
-
-    renderer = Renderer(site, output_path=output)
-    renderer.render_site()
+    site.render(output_path=output)
 
     # Finally, copy media into the build directory
     shutil.copytree('media', os.path.join(output, 'media'))
