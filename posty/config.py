@@ -64,5 +64,11 @@ class Config(MutableMapping):
         c['feeds'].setdefault('rss', True)
         c['feeds'].setdefault('atom', True)
 
+        if c['feeds']['rss'] or c['feeds']['atom']:
+            if not c.get('author'):
+                raise InvalidConfig(self,
+                    'You must set an author if generating RSS/Atom feeds')
+
+
         c.setdefault('compat', {})
         c['compat'].setdefault('redirect_posty1_urls', False)

@@ -1,10 +1,13 @@
+author: you!
 title: My website
 description: Thoughts and stuff
+
 base_url: /
 
 num_top_tags: 5
 num_posts_per_page: 5
 
+# Set rss or atom to False if you do not want to generate those feeds
 feeds:
   rss: True
   atom: True
