@@ -1,6 +1,4 @@
 from collections import Counter
-import copy
-import json
 import os.path
 import shutil
 
@@ -8,7 +6,7 @@ from .config import Config
 from .exceptions import PostyError
 from .page import Page
 from .post import Post
-from .renderer import HtmlRenderer, JsonRenderer
+from .renderer import HtmlRenderer, JsonRenderer, RssRenderer, AtomRenderer
 from .util import slugify
 
 
@@ -22,6 +20,8 @@ class Site(object):
             'posts': [],
             'tags': [],
         }
+
+        self.loaded = False
 
     @property
     def config(self):
@@ -58,6 +58,7 @@ class Site(object):
 
         self._load_pages()
         self._load_posts()
+        self.loaded = True
 
     def render(self, output_path='build'):
         """
@@ -66,11 +67,10 @@ class Site(object):
         HtmlRenderer(self, output_path=output_path).render_site()
         JsonRenderer(self, output_path=output_path).render_site()
 
-        # TODO
-        # if self.config['feeds']['rss']:
-        #     RssRenderer(self, output_path=output_path).render_site()
-        # if self.config['feeds']['atom']:
-        #     AtomRenderer(self, output_path=output_path).render_site()
+        if self.config['feeds']['rss']:
+            RssRenderer(self, output_path=output_path).render_site()
+        if self.config['feeds']['atom']:
+            AtomRenderer(self, output_path=output_path).render_site()
 
     def _load_pages(self):
         pages = []
@@ -151,14 +151,22 @@ class Site(object):
                 )
             )
 
-    def to_json(self):
-        payload = copy.deepcopy(self.payload)
+    @property
+    def copyright(self):
+        """
+        Returns a string of the copyright info, based on the configured author
+        and the years of the first and last post
+        """
+        if not self.loaded:
+            raise PostyError('You must run load() on this site first!')
 
-        # Turn Post and Page objects into their dict representations
-        payload['posts'] = [p.as_dict() for p in payload['posts']]
-        payload['pages'] = [p.as_dict() for p in payload['pages']]
+        first_post = self.payload['posts'][-1]
+        last_post = self.payload['posts'][0]
 
-        for post in payload['posts']:
-            post['date'] = post['date'].isoformat()
+        copyright = '© {start} - {end}, {author}'.format(
+            author=self.config['author'],
+            start=first_post['date'].year,
+            end=last_post['date'].year
+        )
 
-        return json.dumps(payload)
+        return copyright

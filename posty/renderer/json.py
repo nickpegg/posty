@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 
@@ -16,12 +17,12 @@ class JsonRenderer(Renderer):
         }
 
         for page in self.site.payload['pages']:
-            p = page.as_dict()
+            p = copy.deepcopy(page.as_dict())
             p['body'] = markdown(p['body'])
             payload['pages'].append(p)
 
         for post in self.site.payload['posts']:
-            p = post.as_dict()
+            p = copy.deepcopy(post.as_dict())
             p['blurb'] = markdown(p['blurb'])
             p['body'] = markdown(p['body'])
             p['date'] = post['date'].isoformat()

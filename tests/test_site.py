@@ -27,3 +27,8 @@ def test_post_sorting(site):    # noqa
 
         assert last >= post['date']
         last = post['date']
+
+
+def test_copyright(site):   # noqa
+    site.load()
+    assert site.copyright == '© 2010 - 2017, Jimbo Jawn'
