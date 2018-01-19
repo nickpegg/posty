@@ -11,7 +11,8 @@ def markdown(text):
     """
     Returns the rendered version of the given Markdown text
     """
-    return md(text, extensions=['markdown.extensions.fenced_code'])
+    return md(text, tab_length=2,
+              extensions=['markdown.extensions.fenced_code'])
 
 
 def media_url_func(site):
