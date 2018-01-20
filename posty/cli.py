@@ -39,7 +39,13 @@ liking, like setting the site title and such.
     help='Output directory',
     default='build'
 )
-def build(output):
+@click.option(
+    '-c',
+    '--config',
+    type=click.Path(exists=True),
+    help='Path to your config file',
+)
+def build(output, config):
     """
     Build a Posty site as rendered HTML
     """

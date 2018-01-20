@@ -11,8 +11,13 @@ from .util import slugify
 
 
 class Site(object):
-    def __init__(self, site_path='.'):
+    def __init__(self, site_path='.', config_path=None):
         self.site_path = site_path
+
+        if config_path:
+            self.config_path = config_path
+        else:
+            self.config_path = os.path.join(site_path, 'config.yml')
 
         self._config = None
         self.payload = {
@@ -26,7 +31,7 @@ class Site(object):
     @property
     def config(self):
         if not self._config:
-            config_path = os.path.join(self.site_path, 'config.yml')
+            config_path = os.path.join(self.config_path)
             self._config = Config(config_path)
             self._config.load()
         return self._config
