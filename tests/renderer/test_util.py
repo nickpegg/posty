@@ -14,4 +14,9 @@ def test_markdown():
 
 def test_media_url_func(site):  # noqa
     func = util.media_url_func(site)
-    assert func('jawn') == '/test/media/jawn'
+    assert func('jawn') == 'http://example.org/test/media/jawn'
+
+
+def test_absolute_url_func(site):   # noqa
+    func = util.absolute_url_func(site)
+    assert func('jawn/bot') == 'http://example.org/test/jawn/bot'

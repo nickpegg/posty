@@ -60,19 +60,15 @@ class Config(MutableMapping):
         c.setdefault('description', '')
         c.setdefault('base_url', '/')
 
+        if not c['base_url'].endswith('/'):
+            raise InvalidConfig(self, 'base_url must end with /')
+
         c.setdefault('num_top_tags', 5)
         c.setdefault('num_posts_per_page', 5)
 
         c.setdefault('feeds', {})
         c['feeds'].setdefault('rss', True)
         c['feeds'].setdefault('atom', True)
-
-        if c['feeds']['rss'] or c['feeds']['atom']:
-            if not c.get('full_url'):
-                raise InvalidConfig(
-                    self,
-                    'You must set full_url if generating RSS/Atom feeds'
-                )
 
         c.setdefault('compat', {})
         c['compat'].setdefault('redirect_posty1_urls', False)

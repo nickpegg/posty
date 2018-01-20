@@ -41,6 +41,6 @@ class TestValidation(object):
 
 
 def test_url(page):
-    expected_url = '/test/{}/'.format(page['slug'])
+    expected_url = 'http://example.org/test/{}/'.format(page['slug'])
 
     assert page.url() == expected_url

@@ -58,9 +58,6 @@ class Post(Model):
         )
         return urljoin(self.config['base_url'], path)
 
-    def full_url(self):
-        return urljoin(self.config['full_url'], self.url())
-
     def path_on_disk(self):
         return os.path.join(
             str(self.payload['date'].year),

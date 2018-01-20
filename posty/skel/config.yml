@@ -5,10 +5,8 @@ description: Thoughts and stuff
 num_top_tags: 5
 num_posts_per_page: 5
 
-base_url: /
-
-# Full URL used when generating RSS/Atom feeds
-full_url: http://example.org
+# URL of where this site will be hosted, must end with a /
+base_url: http://example.org/
 
 # Set rss or atom to False if you do not want to generate those feeds
 feeds:

@@ -27,3 +27,13 @@ def media_url_func(site):
         base_path = urljoin(site.config['base_url'], 'media/')
         return urljoin(base_path, path)
     return media_url
+
+
+def absolute_url_func(site):
+    """
+    Returns a markdown filter function that returns an absolute URL for the
+    given relative URL, simply concatenating config['base_url'] with the URL.
+    """
+    def absolute_url(path):
+        return urljoin(site.config['base_url'], path)
+    return absolute_url

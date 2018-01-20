@@ -1,0 +1,3 @@
+title: Jinja in Markdown!
+---
+We should be able to put jinja {{ "inside of our templates" }} and have it {{ 'render' + ' totally ' + 'normally'}}!

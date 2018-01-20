@@ -147,7 +147,7 @@ class Site(object):
                 'Unable to find post {}. Available posts: {}'.format(
                     slug,
                     [p.get('slug') or slugify(p['title'])
-                        for p in self.payload['title']]
+                        for p in self.payload['pages']]
                 )
             )
 
