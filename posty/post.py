@@ -39,6 +39,32 @@ class Post(Model):
 
         return cls(post, config=config)
 
+    def to_yaml(self):
+        """
+        Returns the YAML and text representation of this Post. This is the
+        reverse of ``from_yaml()``
+        """
+        metadata = {
+            'title': self['title'],
+            'date': self['date'],
+            'tags': self['tags'],
+        }
+        body = self['body']
+
+        output = yaml.dump(metadata, default_flow_style=False)
+
+        if self['blurb'] != self['body']:
+            output += "---\n"
+            output += self['blurb'].strip()
+            output += "\n"
+
+            body = body.replace(self['blurb'], '')
+
+        output += "---\n"
+        output += body.strip()
+
+        return output
+
     def validate(self):
         required_fields = ('title', 'date', 'blurb', 'body')
         for field in required_fields:
