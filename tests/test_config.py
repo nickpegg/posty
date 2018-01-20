@@ -42,3 +42,9 @@ class TestCleanConfig(object):
         del config['base_url']
         config.clean_config()
         assert config['base_url'] == '/'
+
+    def test_no_author(self, config):
+        del config['author']
+
+        with pytest.raises(InvalidConfig):
+            config.clean_config()

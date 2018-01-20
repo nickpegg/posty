@@ -1,6 +1,8 @@
 awesome-slugify~=1.6.5
 click~=6.7
+feedgen~=0.6.1
 future~=0.16.0
 Jinja2~=2.10
 Markdown~=2.6.11
+pytz>=2017.3
 PyYAML~=3.12

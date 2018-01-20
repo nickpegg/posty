@@ -51,6 +51,9 @@ class Config(MutableMapping):
         """
         c = self.config
 
+        if not c.get('author'):
+            raise InvalidConfig(self, 'You must set an author')
+
         if not c.get('title'):
             raise InvalidConfig(self, 'You must set a title')
 
@@ -59,6 +62,17 @@ class Config(MutableMapping):
 
         c.setdefault('num_top_tags', 5)
         c.setdefault('num_posts_per_page', 5)
+
+        c.setdefault('feeds', {})
+        c['feeds'].setdefault('rss', True)
+        c['feeds'].setdefault('atom', True)
+
+        if c['feeds']['rss'] or c['feeds']['atom']:
+            if not c.get('full_url'):
+                raise InvalidConfig(
+                    self,
+                    'You must set full_url if generating RSS/Atom feeds'
+                )
 
         c.setdefault('compat', {})
         c['compat'].setdefault('redirect_posty1_urls', False)
