@@ -7,15 +7,19 @@ from posty.page import Page
 from .fixtures import config    # noqa
 
 
+@pytest.fixture
+def page_contents():
+    path = os.path.join(os.path.dirname(__file__), 'fixtures', 'site', 'pages',
+                        'test.yaml')
+    return open(path).read()
+
+
 @pytest.fixture     # noqa
-def page(config):
+def page(config, page_contents):
     """
     Basic top-level page (has no parent)
     """
-    path = os.path.join(os.path.dirname(__file__), 'fixtures', 'site', 'pages',
-                        'test.yaml')
-    contents = open(path).read()
-    return Page.from_yaml(contents, config=config)
+    return Page.from_yaml(page_contents, config=config)
 
 
 class TestValidation(object):
@@ -44,3 +48,7 @@ def test_url(page):
     expected_url = 'http://example.org/test/{}/'.format(page['slug'])
 
     assert page.url() == expected_url
+
+
+def test_to_yaml(page, page_contents):
+    assert page_contents.strip() == page.to_yaml()

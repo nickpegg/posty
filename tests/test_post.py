@@ -8,15 +8,19 @@ from posty.post import Post
 from .fixtures import config    # noqa
 
 
+@pytest.fixture
+def post_contents():
+    path = os.path.join(os.path.dirname(__file__), 'fixtures', 'site', 'posts',
+                        'multi-paragraph.yaml')
+    return open(path).read()
+
+
 @pytest.fixture     # noqa
-def post(config):
+def post(config, post_contents):
     """
     Basic post
     """
-    path = os.path.join(os.path.dirname(__file__), 'fixtures', 'site', 'posts',
-                        'multi-paragraph.yaml')
-    contents = open(path).read()
-    return Post.from_yaml(contents, config=config)
+    return Post.from_yaml(post_contents, config=config)
 
 
 class TestValidation(object):
@@ -46,3 +50,7 @@ def test_url(post):
                                                                   post['slug'])
 
     assert post.url() == expected_url
+
+
+def test_to_yaml(post, post_contents):
+    assert post_contents.strip() == post.to_yaml()

@@ -26,6 +26,20 @@ class Page(Model):
 
         return cls(payload, config=config)
 
+    def to_yaml(self):
+        """
+        Returns a string of the YAML and text representation of this Post.
+        This is the reverse of from_yaml
+        """
+        metadata = {'title': self['title']}
+        if self['parent']:
+            metadata['parent'] = self['parent']
+        output = yaml.dump(metadata, default_flow_style=False)
+        output += "---\n"
+        output += self['body']
+
+        return output
+
     def validate(self):
         required_fields = ('title', 'body')
         for field in required_fields:

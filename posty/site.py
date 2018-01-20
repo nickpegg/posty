@@ -1,4 +1,5 @@
 from collections import Counter
+import datetime
 import os.path
 import shutil
 
@@ -175,3 +176,44 @@ class Site(object):
         )
 
         return copyright
+
+    def new_post(self, name="New Post"):
+        """
+        Create a new post in the site directory from the skeleton post
+        """
+        post_dir = os.path.join(self.site_path, 'posts')
+        if not os.path.exists(post_dir):
+            raise PostyError('You must initialize the site first')
+
+        date = datetime.date.today()
+        filename = '{}_{}.yaml'.format(date, slugify(name))
+        post_path = os.path.join(post_dir, filename)
+
+        skel_path = os.path.join(os.path.dirname(__file__),
+                                 'skel/posts/1970-01-01_new-post.yaml')
+        post = Post.from_yaml(open(skel_path).read(), config=self.config)
+        post['title'] = name
+        post['date'] = date
+
+        with open(post_path, 'w') as output_file:
+            output_file.write(post.to_yaml())
+
+    def new_page(self, name="New Page"):
+        """
+        Create a new page in the site directory from the skeleton page
+        """
+        page_dir = os.path.join(self.site_path, 'pages')
+        if not os.path.exists(page_dir):
+            raise PostyError('You must initialize the site first')
+
+        filename = '{}.yaml'.format(slugify(name))
+        page_path = os.path.join(page_dir, filename)
+
+        skel_path = os.path.join(os.path.dirname(__file__),
+                                 'skel/pages/new-page.yaml')
+
+        page = Page.from_yaml(open(skel_path).read(), config=self.config)
+        page['title'] = name
+
+        with open(page_path, 'w') as output_file:
+            output_file.write(page.to_yaml())

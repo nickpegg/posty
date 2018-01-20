@@ -1,8 +1,8 @@
-title: Multi-paragraph Post
 date: 2017-01-14
 tags:
-    - blah
-    - test
+- blah
+- test
+title: Multi-paragraph Post
 ---
 This is a post that has multiple paragraphs, where the first paragraph should get converted into a blurb.
 ---
