@@ -14,7 +14,7 @@ class AtomRenderer(FeedRenderer):
         """
         Return the URL to this feed file
         """
-        return urljoin(self.site.config['full_url'], self.filename)
+        return urljoin(self.site.config['base_url'], self.filename)
 
     def output(self):
         """

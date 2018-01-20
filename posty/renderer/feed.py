@@ -16,11 +16,11 @@ class FeedRenderer(Renderer):
         config = self.site.config
 
         self.feed = FeedGenerator()
-        self.feed.id(config['full_url'])
+        self.feed.id(config['base_url'])
         self.feed.title(config['title'])
         self.feed.author({'name': config['author']})
         self.feed.copyright(self.site.copyright)
-        self.feed.link(href=config['full_url'], rel='alternate')
+        self.feed.link(href=config['base_url'], rel='alternate')
 
         self.feed.link(href=self.url(), rel='self')
 
@@ -45,8 +45,8 @@ class FeedRenderer(Renderer):
         """
         for post in reversed(self.site.payload['posts']):
             entry = self.feed.add_entry()
-            entry.id(post.full_url())
-            entry.link(href=post.full_url())
+            entry.id(post.url())
+            entry.link(href=post.url())
             entry.title(post['title'])
 
             pub_date = datetime.combine(

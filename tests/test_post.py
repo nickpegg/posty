@@ -42,6 +42,7 @@ class TestValidation(object):
 def test_url(post):
     year = post['date'].year
     month = post['date'].month
-    expected_url = '/test/{}/{:02d}/{}/'.format(year, month, post['slug'])
+    expected_url = 'http://example.org/test/{}/{:02d}/{}/'.format(year, month,
+                                                                  post['slug'])
 
     assert post.url() == expected_url
