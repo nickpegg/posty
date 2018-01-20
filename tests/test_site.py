@@ -1,3 +1,6 @@
+import datetime
+import os
+
 from .fixtures import site  # noqa
 
 
@@ -32,3 +35,26 @@ def test_post_sorting(site):    # noqa
 def test_copyright(site):   # noqa
     site.load()
     assert site.copyright == 'Copyright 2010 - 2017, Jimbo Jawn'
+
+
+def test_new_page(site):
+    site.new_page()
+    new_page_path = os.path.join(site.site_path, 'pages', 'new-page.yaml')
+    assert os.path.exists(new_page_path)
+
+    site.new_page('Neato page')
+    new_page_path = os.path.join(site.site_path, 'pages', 'neato-page.yaml')
+    assert os.path.exists(new_page_path)
+
+def test_new_post(site):
+    date = datetime.date.today()
+
+    site.new_post()
+    filename = '{}_new-post.yaml'.format(date)
+    expected_path = os.path.join(site.site_path, 'posts', filename)
+    assert os.path.exists(expected_path)
+
+    site.new_post('Neato Post')
+    filename = '{}_neato-post.yaml'.format(date)
+    expected_path = os.path.join(site.site_path, 'posts', filename)
+    assert os.path.exists(expected_path)

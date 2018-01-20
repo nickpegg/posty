@@ -57,6 +57,42 @@ def build(output, config):
     shutil.copytree('media', os.path.join(output, 'media'))
 
 
+@cli.group(name='new')
+def _new():
+    """
+    Create a new post or page
+    """
+    pass
+
+
+@_new.command()
+@click.option(
+    '--name',
+    help='Name of the new page',
+    default='New Page',
+)
+def page(name):
+    """
+    Create a new page from the template
+    """
+    site = Site()
+    site.new_page(name=name)
+
+
+@_new.command()
+@click.option(
+    '--name',
+    help='Name of the new post',
+    default='New Post',
+)
+def post(name):
+    """
+    Create a new page from the template
+    """
+    site = Site()
+    site.new_post(name=name)
+
+
 @cli.group(name='import')
 def _import():
     """
