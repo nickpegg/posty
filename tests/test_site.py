@@ -23,7 +23,7 @@ def test_post_sorting(site):    # noqa
     for post in site.payload['posts']:
         if last is None:
             last = post['date']
-            next
+            continue
 
         assert last >= post['date']
         last = post['date']
