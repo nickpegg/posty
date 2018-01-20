@@ -142,7 +142,7 @@ class Posty1Importer(Importer):
         # Convert the metadata
         meta = yaml.load(docs[1])
         meta.setdefault('tags', [])
-        new_post += yaml.dump(meta)
+        new_post += yaml.dump(meta, default_flow_style=False)
 
         # Create a blurb out of the first paragraph
         body = docs[2].strip().split("\n\n")
