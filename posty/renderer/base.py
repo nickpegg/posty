@@ -1,11 +1,12 @@
 import abc
+import copy
 from future.utils import with_metaclass
 import os
 
 
 class Renderer(with_metaclass(abc.ABCMeta)):
     def __init__(self, site, output_path='build'):
-        self.site = site
+        self.site = copy.deepcopy(site)
         self.output_path = os.path.join(site.site_path, output_path)
 
     @abc.abstractmethod
