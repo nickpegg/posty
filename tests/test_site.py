@@ -37,7 +37,7 @@ def test_copyright(site):   # noqa
     assert site.copyright == 'Copyright 2010 - 2017, Jimbo Jawn'
 
 
-def test_new_page(site):
+def test_new_page(site):    # noqa
     site.new_page()
     new_page_path = os.path.join(site.site_path, 'pages', 'new-page.yaml')
     assert os.path.exists(new_page_path)
@@ -46,7 +46,8 @@ def test_new_page(site):
     new_page_path = os.path.join(site.site_path, 'pages', 'neato-page.yaml')
     assert os.path.exists(new_page_path)
 
-def test_new_post(site):
+
+def test_new_post(site):    # noqa
     date = datetime.date.today()
 
     site.new_post()
