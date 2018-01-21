@@ -35,7 +35,7 @@ Here's what happens when you run the ``posty import posty1`` command:
    ``new_site/posts/``.
 
 In each post, the first paragraph of each body will be converted into a
-:ref:`blurb <posts>`, so it's a good idea to inspect each post to make sure it
+:ref:`blurb <post>`, so it's a good idea to inspect each post to make sure it
 was converted to your liking.
 
 Additionally it's a good idea to check that your templates will work with

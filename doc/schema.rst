@@ -1,7 +1,7 @@
 Post and Page Schema
 ====================
 
-A site is made up of two main components: :ref:`pages` and :ref:`posts`. Each
+A site is made up of two main components: :ref:`page` and :ref:`post`. Each
 type of file consists of two parts: a YAML header and the actual content. See
 below for the format of each.
 
@@ -9,10 +9,10 @@ Like the :doc:`config file <config>`, you can set extra keys in the metadata whi
 simply be passed along, enabling you to use them in your templates.
 
 
-.. _pages:
+.. _page:
 
-Pages
------
+Page
+----
 
 Pages are the simplest object. These are located in the ``pages/`` directory
 in your site root. They are simply some YAML metadata, followed by three
@@ -34,10 +34,10 @@ Required Metadata Fields
 * ``title`` - The title of the page
 
 
-.. _posts:
+.. _post:
 
-Posts
------
+Post
+----
 
 Posts are a little bit more complex. They have three sections separated by
 ``---``: the YAML metadata, a blurb (or summary), and the body.

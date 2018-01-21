@@ -76,10 +76,9 @@ class Site(object):
         """
         Load the site from files on disk into our internal representation
         """
-        self.payload['title'] = self.config['title']
-        self.payload['description'] = self.config['description']
-        self.payload['base_url'] = self.config['base_url']
-        self.payload['num_top_tags'] = self.config['num_top_tags']
+        # Include the whole config
+        # TODO: deprecate the previous items
+        self.payload['config'] = dict(self.config)
 
         self._load_pages()
         self._load_posts()

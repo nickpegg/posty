@@ -21,7 +21,7 @@ def test_render_site(renderer):     # noqa
 
     json_path = os.path.join(renderer.output_path, 'site.json')
     blob = json.load(open(json_path))
-    assert blob['title'] == 'Test website'
+    assert blob['config']['title'] == 'Test website'
 
     assert len(blob['pages']) > 0
     assert len(blob['posts']) > 0
