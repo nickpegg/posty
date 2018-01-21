@@ -24,8 +24,8 @@ def init():
 Directories:
 - posts -> Put all of your blog posts here
 - pages -> Put all of your static pages here
-- templates -> jinja2 HTML templates go here, a base set has been provided
-- static -> Static files go here
+- templates -> jinja2 HTML templates go here
+- media -> Static files go here; JS, CSS, images, etc.
 
 There is also a config file at config.yml that you should adjust to your
 liking, like setting the site title and such.

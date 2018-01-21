@@ -35,6 +35,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.coverage',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
     'sphinx_click.ext',
 ]
@@ -176,4 +177,6 @@ texinfo_documents = [
 ]
 
 
-
+intersphinx_mapping = {
+    'jinja2': ('http://jinja.pocoo.org/docs/2.10/', None),
+}
