@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <!-- Try JavaScript first -->
+        <script type="text/javascript">
+            window.location = "{{ url }}";
+        </script>
+
+        <!-- If JavaScript is disabled or not supported, kick it old-school -->
+        <noscript>
+            <meta http-equiv="refresh" content="0; url={{ url }}">
+        </noscript>
+    </head>
+    <body>
+        <!-- If their browser is super-old, just give them a link to click -->
+        <p>
+            This page has moved. If your browser hasn't redirected you already,
+            <a href="{{ url }}">click here</a>.
+        </p>
+    </body>
+</html>
