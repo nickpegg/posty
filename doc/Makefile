@@ -16,7 +16,7 @@ livehtml:
 	sphinx-autobuild -b html $(SPHINXOPTS) "$(SOURCEDIR)" "$(BUILDDIR)/html"
 
 apidoc:
-	sphinx-apidoc -e -o api ../posty
+	sphinx-apidoc -f -e -o api ../posty
 
 .PHONY: help Makefile
 

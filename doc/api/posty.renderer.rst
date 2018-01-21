@@ -11,6 +11,7 @@ Submodules
    posty.renderer.feed
    posty.renderer.html
    posty.renderer.json
+   posty.renderer.posty1_redirect
    posty.renderer.rss
    posty.renderer.util
 
