@@ -8,6 +8,13 @@ This is what powers [my personal website](https://nickpegg.com).
 This was mostly written for fun. There are other, probably better and
 definitely more full-featured static site generators out there.
 
-## Development
-Bootstrap your environment with the `make develop` command. It's highly
-recommended to use a virtualenv or something when doing this.
+## Super-Quickstart
+```
+$ posty init
+$ vim pages/blah.yaml
+$ vim posts/1970-01-01_my-post.yaml
+$ posty build
+# Then deploy to your web server
+```
+
+Go check out [the docs](http://posty.readthedocs.io/) for a more info.
