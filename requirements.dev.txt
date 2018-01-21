@@ -7,3 +7,4 @@ pytest-watch~=4.1.0
 Sphinx~=1.6.6
 sphinx_rtd_theme
 sphinx-click
+-e .
