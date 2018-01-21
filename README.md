@@ -1,5 +1,7 @@
 # Posty
 
+[![Build Status](https://travis-ci.org/nickpegg/posty.svg?branch=release-2.0)](https://travis-ci.org/nickpegg/posty) [![Documentation Status](https://readthedocs.org/projects/posty/badge/?version=latest)](http://posty.readthedocs.io/en/latest/?badge=latest)
+
 A simple static site generator tool. Reads in a series of posts and pages
 containing YAML metadata and Markdown text, and renders them as HTML.
 
