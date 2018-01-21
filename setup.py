@@ -1,13 +1,16 @@
 from distutils.core import setup
 
 setup(
-    name='Posty',
+    name='posty',
     version='2.0.0',
     author='Nick Pegg',
     author_email='nick@nickpegg.com',
     url='https://github.com/nickpegg/posty',
     description='A static site generator',
-    long_description=open('README.md').read(),
+    long_description="""
+A simple static site generator tool. Reads in a series of posts and pages
+containing YAML metadata and Markdown text, and renders them as HTML.
+""",
 
     packages=['posty'],
     package_data={'posty': ['skel/*/.keep']},
