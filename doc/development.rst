@@ -16,8 +16,8 @@ command to run:
 
 
 This will install all of the pip requirements in ``requirements.dev.txt`` and
-install posty into your environment in 'editable mode'. Editable mode means
-that posty will be installed into your env as if it were any other package, but
+install Posty into your environment in 'editable mode'. Editable mode means
+that Posty will be installed into your env as if it were any other package, but
 any changes you make to the source code will be instantly reflected in the CLI
 binary.
 
