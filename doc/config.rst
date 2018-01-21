@@ -32,6 +32,8 @@ you run ``posty init``.
     redirect_posty1_urls: False
 
 
+.. _config_variables:
+
 Config Variables
 ----------------
 These are all of the config variables that Posty will recognize. It will ignore
