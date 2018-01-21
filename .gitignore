@@ -1,3 +1,7 @@
-posts.db
-templates/*.html
-.DS_Store
+.cache
+dist
+*pyc
+__pycache__
+MANIFEST
+*.egg-info
+doc/_build

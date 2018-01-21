@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ site.title }} - {% block title %}{% endblock %}</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="header">
+        <a href="/">My Website</a>
+      </div>
+    </header>
+
+    <nav>
+      <div id="menu">
+        <h1>Menu</h1>
+        <ul>
+        {% for p in site.pages %}
+          {% if p.parent == None %}
+            <li class="item"><a href="/{{p.slug}}/">{{p.title}}</a></li>
+          {% endif %}
+        {% endfor %}
+        </ul>
+      </div>
+    </nav>
+
+    <div id="content">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    <footer>
+      <div class="footer">
+        <p>Copyright 2010 You</p>
+        <p>Powered by <a href="https://github.com/nickpegg/posty">Posty</a></p>
+      </div>
+    </footer>
+  </body>
+</html>

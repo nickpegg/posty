@@ -1,0 +1,21 @@
+author: you!
+title: My website
+description: Thoughts and stuff
+
+# URL of where this site will be hosted, must end with a /
+base_url: http://example.org/
+
+num_top_tags: 5
+
+# When generating a HTML file that is a list of posts, break the list up into
+# chunks of num_posts_per_page and generate one file per group of posts
+num_posts_per_page: 5
+
+# Set rss or atom to False if you do not want to generate those feeds
+feeds:
+  rss: True
+  atom: True
+
+# Backward compatibility tunables
+compat:
+  redirect_posty1_urls: False

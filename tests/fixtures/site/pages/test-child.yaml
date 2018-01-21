@@ -1,0 +1,5 @@
+title: Test's child
+parent: Test
+---
+## This is another test page
+### This one should be a child of the first
