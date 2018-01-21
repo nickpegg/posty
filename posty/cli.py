@@ -49,7 +49,7 @@ def build(output, config):
     """
     Build a Posty site as rendered HTML
     """
-    site = Site()
+    site = Site(config_path=config)
     site.load()
     site.render(output_path=output)
 
