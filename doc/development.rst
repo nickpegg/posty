@@ -5,7 +5,7 @@ All development is currently done against Python 3.5 (the latest available in
 Ubuntu 16.04), and all CI tests are ran against version 2.7, 3.5, and 3.6.
 
 Bootstrapping
-------------
+-------------
 Bootstrapping your development environment is easy! Once you set up whatever
 virtualenv or container or VM that you want to do development in, there's one
 command to run:

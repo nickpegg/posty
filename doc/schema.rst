@@ -66,6 +66,7 @@ reverse-chronological order. The first page will be rendered as ``index.html``
 and following pages will be rendered as ``page/:page_num/index.html``.
 
 .. _post_tags:
+
 Tags
 ~~~~
 
