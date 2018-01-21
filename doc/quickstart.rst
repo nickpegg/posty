@@ -1,6 +1,9 @@
 Quickstart
 ==========
 
+**Important:** If you are a Posty 1.x user, you can skip this and instead take
+a look at the :ref:`posty1_import` import docs.
+
 To get started, create yourself an empty directory, cd into it, and then run
 ``posty init`` to create a site skeleton.
 

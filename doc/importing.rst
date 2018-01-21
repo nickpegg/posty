@@ -1,6 +1,8 @@
 Importing From Other Static Site Generators
 ===========================================
 
+.. _posty1_import:
+
 Posty 1.x
 ---------
 
