@@ -1,0 +1,295 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>posty.site &#8212; Posty 2.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for posty.site</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="kn">from</span> <span class="nn">.config</span> <span class="k">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="k">import</span> <span class="n">PostyError</span>
+<span class="kn">from</span> <span class="nn">.page</span> <span class="k">import</span> <span class="n">Page</span>
+<span class="kn">from</span> <span class="nn">.post</span> <span class="k">import</span> <span class="n">Post</span>
+<span class="kn">from</span> <span class="nn">.renderer</span> <span class="k">import</span> <span class="n">HtmlRenderer</span><span class="p">,</span> <span class="n">JsonRenderer</span><span class="p">,</span> <span class="n">RssRenderer</span><span class="p">,</span> <span class="n">AtomRenderer</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="k">import</span> <span class="n">slugify</span>
+
+
+<div class="viewcode-block" id="Site"><a class="viewcode-back" href="../../api/posty.site.html#posty.site.Site">[docs]</a><span class="k">class</span> <span class="nc">Site</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Representation of an entire site with posts and pages. This is the main</span>
+<span class="sd">    class that conrols everything.</span>
+
+<span class="sd">    :param site_path:</span>
+<span class="sd">        Path to the directory containing site content (pages, posts, templates)</span>
+
+<span class="sd">    :param config_path:</span>
+<span class="sd">        Path to the config file, defaults to ``$SITE_PATH/config.yml``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site_path</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">config_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">site_path</span> <span class="o">=</span> <span class="n">site_path</span>
+
+        <span class="k">if</span> <span class="n">config_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config_path</span> <span class="o">=</span> <span class="n">config_path</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">site_path</span><span class="p">,</span> <span class="s1">&#39;config.yml&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;pages&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;posts&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns this site&#39;s config as read from the config file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">:</span>
+            <span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
+
+<div class="viewcode-block" id="Site.init"><a class="viewcode-back" href="../../api/posty.site.html#posty.site.Site.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a new Posty site at the given path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">skel_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;skel&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">thing</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">skel_path</span><span class="p">):</span>
+            <span class="n">src</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skel_path</span><span class="p">,</span> <span class="n">thing</span><span class="p">)</span>
+            <span class="n">dst</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">site_path</span><span class="p">,</span> <span class="n">thing</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> already exists, not overwriting&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">thing</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Site.load"><a class="viewcode-back" href="../../api/posty.site.html#posty.site.Site.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the site from files on disk into our internal representation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;base_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;base_url&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;num_top_tags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;num_top_tags&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_pages</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_posts</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Site.render"><a class="viewcode-back" href="../../api/posty.site.html#posty.site.Site.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="s1">&#39;build&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Render the site with the various renderers</span>
+
+<span class="sd">        * HTML</span>
+<span class="sd">        * JSON</span>
+<span class="sd">        * RSS (if ``feeds.rss`` is True in the config)</span>
+<span class="sd">        * Atom (if ``feeds.atom`` is True in the config)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">HtmlRenderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span><span class="o">.</span><span class="n">render_site</span><span class="p">()</span>
+        <span class="n">JsonRenderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span><span class="o">.</span><span class="n">render_site</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;feeds&#39;</span><span class="p">][</span><span class="s1">&#39;rss&#39;</span><span class="p">]:</span>
+            <span class="n">RssRenderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span><span class="o">.</span><span class="n">render_site</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;feeds&#39;</span><span class="p">][</span><span class="s1">&#39;atom&#39;</span><span class="p">]:</span>
+            <span class="n">AtomRenderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span><span class="o">.</span><span class="n">render_site</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_load_pages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pages</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">page_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">site_path</span><span class="p">,</span> <span class="s1">&#39;pages&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">page_dir</span><span class="p">):</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">page_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">pages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Page</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;pages&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pages</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_load_posts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">posts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Load each post</span>
+        <span class="n">post_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">site_path</span><span class="p">,</span> <span class="s1">&#39;posts&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">post_dir</span><span class="p">):</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">post_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">post</span> <span class="o">=</span> <span class="n">Post</span><span class="o">.</span><span class="n">from_yaml</span><span class="p">(</span><span class="n">contents</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
+
+            <span class="n">posts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">post</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;posts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">posts</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">],</span>
+                                       <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># uniquify tags and sort by frequency (descending)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">Counter</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span><span class="o">.</span><span class="n">most_common</span><span class="p">()]</span>
+
+<div class="viewcode-block" id="Site.post"><a class="viewcode-back" href="../../api/posty.site.html#posty.site.Site.post">[docs]</a>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slug</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a Post object by its slug</span>
+
+<span class="sd">        :param slug:</span>
+<span class="sd">            slug of the post to find</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">            A post dict</span>
+
+<span class="sd">        :raises PostyError:</span>
+<span class="sd">            if no post could be found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;posts&#39;</span><span class="p">]:</span>
+            <span class="n">post_slug</span> <span class="o">=</span> <span class="n">post</span><span class="p">[</span><span class="s1">&#39;slug&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">slugify</span><span class="p">(</span><span class="n">post</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">slug</span> <span class="o">==</span> <span class="n">post_slug</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">post</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PostyError</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to find post </span><span class="si">{}</span><span class="s1">. Available posts: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">slug</span><span class="p">,</span>
+                    <span class="p">[</span><span class="n">slugify</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;pages&#39;</span><span class="p">]]</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Site.page"><a class="viewcode-back" href="../../api/posty.site.html#posty.site.Site.page">[docs]</a>    <span class="k">def</span> <span class="nf">page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slug</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a Page object by its slug</span>
+
+<span class="sd">        :param slug:</span>
+<span class="sd">            slug of the page to find</span>
+
+<span class="sd">        :returns:</span>
+<span class="sd">            A page dict</span>
+
+<span class="sd">        :raises PostyError:</span>
+<span class="sd">            if no page could be found</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;pages&#39;</span><span class="p">]:</span>
+            <span class="n">page_slug</span> <span class="o">=</span> <span class="n">page</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;slug&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">slug</span> <span class="o">==</span> <span class="n">slugify</span><span class="p">(</span><span class="n">page</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">slug</span> <span class="o">==</span> <span class="n">page_slug</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">page</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PostyError</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to find post </span><span class="si">{}</span><span class="s1">. Available posts: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">slug</span><span class="p">,</span>
+                    <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;slug&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">slugify</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">])</span>
+                        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;pages&#39;</span><span class="p">]]</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">copyright</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a string of the copyright info, based on the configured author</span>
+<span class="sd">        and the years of the first and last post</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PostyError</span><span class="p">(</span><span class="s1">&#39;You must run load() on this site first!&#39;</span><span class="p">)</span>
+
+        <span class="n">first_post</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;posts&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">last_post</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;posts&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">copyright</span> <span class="o">=</span> <span class="s1">&#39;Copyright </span><span class="si">{start}</span><span class="s1"> - </span><span class="si">{end}</span><span class="s1">, </span><span class="si">{author}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">author</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">],</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">first_post</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">year</span><span class="p">,</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">last_post</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">year</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">copyright</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli.html">CLI Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Config File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../schema.html">Post and Page Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../templating.html">Templating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../importing.html">Importing From Other Static Site Generators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module docs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">posty</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nick Pegg.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

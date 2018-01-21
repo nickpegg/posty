@@ -1,0 +1,296 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>posty.renderer.html &#8212; Posty 2.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for posty.renderer.html</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">future.standard_library</span> <span class="k">import</span> <span class="n">install_aliases</span>
+<span class="n">install_aliases</span><span class="p">()</span>   <span class="c1"># noqa</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">jinja2</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urljoin</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">Renderer</span>
+<span class="kn">from</span> <span class="nn">.util</span> <span class="k">import</span> <span class="n">markdown</span><span class="p">,</span> <span class="n">media_url_func</span><span class="p">,</span> <span class="n">absolute_url_func</span>
+
+<span class="c1"># Route reference</span>
+<span class="c1"># /               Posts</span>
+<span class="c1"># /page/:page/    Posts page #:page</span>
+<span class="c1"># /tag/:tag/      Posts matching tag :tag</span>
+<span class="c1"># /tag/:tag/page/:page/   Posts matching tag :tag, page #:page</span>
+<span class="c1">#</span>
+<span class="c1"># /:year/:month/:slug/    Single post</span>
+<span class="c1">#</span>
+<span class="c1"># /:slug/         Page matching :slug</span>
+
+
+<div class="viewcode-block" id="HtmlRenderer"><a class="viewcode-back" href="../../../api/posty.renderer.html.html#posty.renderer.HtmlRenderer">[docs]</a><span class="k">class</span> <span class="nc">HtmlRenderer</span><span class="p">(</span><span class="n">Renderer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Renderer that outputs HTML files</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">site</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="s1">&#39;build&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param site:</span>
+<span class="sd">            a Site object to build</span>
+
+<span class="sd">        :param output_path:</span>
+<span class="sd">            path relative to the Site&#39;s path to put rendered HTML files into</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HtmlRenderer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">output_path</span><span class="o">=</span><span class="n">output_path</span><span class="p">)</span>
+
+        <span class="n">template_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">site</span><span class="o">.</span><span class="n">site_path</span><span class="p">,</span> <span class="s1">&#39;templates&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jinja_env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span>
+            <span class="n">loader</span><span class="o">=</span><span class="n">jinja2</span><span class="o">.</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">template_path</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jinja_env</span><span class="o">.</span><span class="n">filters</span>
+        <span class="n">filters</span><span class="p">[</span><span class="s1">&#39;markdown&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">markdown</span>
+        <span class="n">filters</span><span class="p">[</span><span class="s1">&#39;media_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">media_url_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="p">)</span>
+        <span class="n">filters</span><span class="p">[</span><span class="s1">&#39;absolute_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">absolute_url_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_render_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+<div class="viewcode-block" id="HtmlRenderer.render_site"><a class="viewcode-back" href="../../../api/posty.renderer.html.html#posty.renderer.HtmlRenderer.render_site">[docs]</a>    <span class="k">def</span> <span class="nf">render_site</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a Site object, render all of its components</span>
+
+<span class="sd">        :param site: a loaded Site object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prepare_content</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;posts&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">render_post</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;pages&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">render_page</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_site_posts</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_site_tags</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="HtmlRenderer.prepare_content"><a class="viewcode-back" href="../../../api/posty.renderer.html.html#posty.renderer.HtmlRenderer.prepare_content">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do a first-pass rendering of each post and page text, treating the text</span>
+<span class="sd">        as Jinja2 templates. This lets us use basic jinja in the markdown to</span>
+<span class="sd">        be able to use filter functions like this:</span>
+
+<span class="sd">        ``{{ &quot;img/cool_pic.jpg&quot; | media_url }}``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;pages&#39;</span><span class="p">]:</span>
+            <span class="n">page</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jinja_env</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">page</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;posts&#39;</span><span class="p">]:</span>
+            <span class="n">post</span><span class="p">[</span><span class="s1">&#39;blurb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jinja_env</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">post</span><span class="p">[</span><span class="s1">&#39;blurb&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+            <span class="n">post</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jinja_env</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">post</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">render</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="HtmlRenderer.render_posts"><a class="viewcode-back" href="../../../api/posty.renderer.html.html#posty.renderer.HtmlRenderer.render_posts">[docs]</a>    <span class="k">def</span> <span class="nf">render_posts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">posts</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">template_name</span><span class="o">=</span><span class="s1">&#39;posts.html&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Render a list of posts as sets of pages where each page has</span>
+<span class="sd">        ``num_posts_per_page`` posts. Each page of posts will be rendered to</span>
+<span class="sd">        the path page/:page/index.html relative to the Renderer output_path</span>
+
+<span class="sd">        If ``prefix`` is given, add that will be put in between the output_path</span>
+<span class="sd">        and page path. For example if the prefix is &#39;tags/foo/&#39; then a page</span>
+<span class="sd">        path would look like &#39;tags/foo/page/:page/index.html&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">prefix</span> <span class="ow">and</span> <span class="n">prefix</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;/&#39;</span><span class="p">:</span>
+            <span class="n">prefix</span> <span class="o">+=</span> <span class="s1">&#39;/&#39;</span>
+
+        <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jinja_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">template_name</span><span class="p">)</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">bucket</span><span class="p">(</span><span class="n">posts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;num_posts_per_page&#39;</span><span class="p">])</span>
+
+        <span class="n">base_page_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;base_url&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">prefix</span><span class="p">:</span>
+            <span class="n">base_page_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">base_page_url</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span>
+        <span class="n">base_page_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">base_page_url</span><span class="p">,</span> <span class="s1">&#39;page/&#39;</span><span class="p">)</span>
+
+        <span class="n">output_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="n">prefix</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+
+        <span class="c1"># Render the first group as index.html</span>
+        <span class="n">posts</span> <span class="o">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">dst_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+        <span class="n">next_page_url</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">next_page_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">base_page_url</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_file</span><span class="p">(</span><span class="n">dst_file</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">,</span>
+                         <span class="n">posts</span><span class="o">=</span><span class="n">posts</span><span class="p">,</span> <span class="n">next_page_url</span><span class="o">=</span><span class="n">next_page_url</span><span class="p">)</span>
+
+        <span class="c1"># Render the rest</span>
+        <span class="n">last_page</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">page</span><span class="p">,</span> <span class="n">posts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">groups</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">dst_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="s1">&#39;page&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">page</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst_path</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dst_path</span><span class="p">)</span>
+
+            <span class="n">dst_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">page</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">prev_page_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;base_url&#39;</span><span class="p">],</span> <span class="n">prefix</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prev_page_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">base_page_url</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+            <span class="n">next_page_url</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">page</span> <span class="o">!=</span> <span class="n">last_page</span><span class="p">:</span>
+                <span class="n">next_page_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">base_page_url</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">page</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_render_file</span><span class="p">(</span>
+                <span class="n">dst_file</span><span class="p">,</span>
+                <span class="n">template</span><span class="p">,</span>
+                <span class="n">site</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">,</span>
+                <span class="n">posts</span><span class="o">=</span><span class="n">posts</span><span class="p">,</span>
+                <span class="n">prev_page_url</span><span class="o">=</span><span class="n">prev_page_url</span><span class="p">,</span>
+                <span class="n">next_page_url</span><span class="o">=</span><span class="n">next_page_url</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="HtmlRenderer.render_site_posts"><a class="viewcode-back" href="../../../api/posty.renderer.html.html#posty.renderer.HtmlRenderer.render_site_posts">[docs]</a>    <span class="k">def</span> <span class="nf">render_site_posts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Renders all of the multi-post pages, N per page</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_output_path</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_posts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;posts&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="HtmlRenderer.render_site_tags"><a class="viewcode-back" href="../../../api/posty.renderer.html.html#posty.renderer.HtmlRenderer.render_site_tags">[docs]</a>    <span class="k">def</span> <span class="nf">render_site_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_name</span><span class="o">=</span><span class="s1">&#39;posts.html&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Renders all of the per-tag multi-post pages, N per page</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_output_path</span><span class="p">()</span>
+
+        <span class="c1"># Bucket all posts by tag</span>
+        <span class="n">tag_buckets</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">post</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s1">&#39;posts&#39;</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">post</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]:</span>
+                <span class="n">tag_buckets</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">post</span><span class="p">)</span>
+
+        <span class="c1"># For each tag, render pages of posts</span>
+        <span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">posts</span> <span class="ow">in</span> <span class="n">tag_buckets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">render_posts</span><span class="p">(</span><span class="n">posts</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;tag/</span><span class="si">{}</span><span class="s1">/&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">),</span>
+                              <span class="n">template_name</span><span class="o">=</span><span class="n">template_name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HtmlRenderer.render_page"><a class="viewcode-back" href="../../../api/posty.renderer.html.html#posty.renderer.HtmlRenderer.render_page">[docs]</a>    <span class="k">def</span> <span class="nf">render_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">template_name</span><span class="o">=</span><span class="s1">&#39;page.html&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param page: a Page object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_output_path</span><span class="p">()</span>
+
+        <span class="n">dst_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="n">page</span><span class="o">.</span><span class="n">path_on_disk</span><span class="p">())</span>
+        <span class="n">dst_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jinja_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">template_name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_file</span><span class="p">(</span><span class="n">dst_file</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="n">page</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="HtmlRenderer.render_post"><a class="viewcode-back" href="../../../api/posty.renderer.html.html#posty.renderer.HtmlRenderer.render_post">[docs]</a>    <span class="k">def</span> <span class="nf">render_post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post</span><span class="p">,</span> <span class="n">template_name</span><span class="o">=</span><span class="s1">&#39;post.html&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param post: a Post object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_output_path</span><span class="p">()</span>
+
+        <span class="n">dst_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_path</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">path_on_disk</span><span class="p">())</span>
+        <span class="n">dst_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">)</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jinja_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">template_name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_file</span><span class="p">(</span><span class="n">dst_file</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">payload</span><span class="p">,</span> <span class="n">post</span><span class="o">=</span><span class="n">post</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../../../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cli.html">CLI Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">Config File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../schema.html">Post and Page Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../templating.html">Templating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../importing.html">Importing From Other Static Site Generators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module docs:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/modules.html">posty</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nick Pegg.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

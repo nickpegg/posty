@@ -10,6 +10,9 @@ from .util import slugify
 
 
 class Page(Model):
+    """
+    Representation of a page
+    """
     @classmethod
     def from_yaml(cls, file_contents, config=None):
         """

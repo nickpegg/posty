@@ -1,0 +1,2 @@
+Post and Page Schema
+====================

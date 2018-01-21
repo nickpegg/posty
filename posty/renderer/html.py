@@ -22,6 +22,9 @@ from .util import markdown, media_url_func, absolute_url_func
 
 
 class HtmlRenderer(Renderer):
+    """
+    Renderer that outputs HTML files
+    """
     def __init__(self, site, output_path='build'):
         """
         :param site:
@@ -42,7 +45,7 @@ class HtmlRenderer(Renderer):
         filters['media_url'] = media_url_func(self.site)
         filters['absolute_url'] = absolute_url_func(self.site)
 
-    def render_file(self, path, template, **kwargs):
+    def _render_file(self, path, template, **kwargs):
         with open(path, 'w') as f:
             f.write(template.render(**kwargs))
 
@@ -69,7 +72,7 @@ class HtmlRenderer(Renderer):
         as Jinja2 templates. This lets us use basic jinja in the markdown to
         be able to use filter functions like this:
 
-        {{ "img/cool_pic.jpg" | media_url }}
+        ``{{ "img/cool_pic.jpg" | media_url }}``
         """
         for page in self.site.payload['pages']:
             page['body'] = self.jinja_env.from_string(page['body']).render()
@@ -109,7 +112,7 @@ class HtmlRenderer(Renderer):
         next_page_url = None
         if len(groups) > 0:
             next_page_url = urljoin(base_page_url, str(2) + '/')
-        self.render_file(dst_file, template, site=self.site.payload,
+        self._render_file(dst_file, template, site=self.site.payload,
                          posts=posts, next_page_url=next_page_url)
 
         # Render the rest
@@ -129,7 +132,7 @@ class HtmlRenderer(Renderer):
             if page != last_page:
                 next_page_url = urljoin(base_page_url, str(page + 1) + '/')
 
-            self.render_file(
+            self._render_file(
                 dst_file,
                 template,
                 site=self.site.payload,
@@ -175,7 +178,7 @@ class HtmlRenderer(Renderer):
             os.makedirs(dst_dir)
         template = self.jinja_env.get_template(template_name)
 
-        self.render_file(dst_file, template, site=self.site.payload, page=page)
+        self._render_file(dst_file, template, site=self.site.payload, page=page)
 
     def render_post(self, post, template_name='post.html'):
         """
@@ -190,4 +193,4 @@ class HtmlRenderer(Renderer):
             os.makedirs(dst_dir)
         template = self.jinja_env.get_template(template_name)
 
-        self.render_file(dst_file, template, site=self.site.payload, post=post)
+        self._render_file(dst_file, template, site=self.site.payload, post=post)

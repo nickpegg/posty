@@ -18,6 +18,16 @@ from .util import slugify
 
 
 class Site(object):
+    """
+    Representation of an entire site with posts and pages. This is the main
+    class that conrols everything.
+
+    :param site_path:
+        Path to the directory containing site content (pages, posts, templates)
+
+    :param config_path:
+        Path to the config file, defaults to ``$SITE_PATH/config.yml``
+    """
     def __init__(self, site_path='.', config_path=None):
         self.site_path = site_path
 
@@ -37,6 +47,9 @@ class Site(object):
 
     @property
     def config(self):
+        """
+        Returns this site's config as read from the config file
+        """
         if not self._config:
             config_path = os.path.join(self.config_path)
             self._config = Config(config_path)
@@ -45,7 +58,7 @@ class Site(object):
 
     def init(self):
         """
-        Initialize a new Posty site at the gien path
+        Initialize a new Posty site at the given path
         """
         skel_path = os.path.join(os.path.dirname(__file__), 'skel')
         for thing in os.listdir(skel_path):
@@ -78,6 +91,11 @@ class Site(object):
     def render(self, output_path='build'):
         """
         Render the site with the various renderers
+
+        * HTML
+        * JSON
+        * RSS (if ``feeds.rss`` is True in the config)
+        * Atom (if ``feeds.atom`` is True in the config)
         """
         HtmlRenderer(self, output_path=output_path).render_site()
         JsonRenderer(self, output_path=output_path).render_site()
@@ -120,7 +138,7 @@ class Site(object):
 
     def post(self, slug):
         """
-        Returns a post by its slug
+        Returns a Post object by its slug
 
         :param slug:
             slug of the post to find
@@ -145,7 +163,7 @@ class Site(object):
 
     def page(self, slug):
         """
-        Returns a page by its slug
+        Returns a Page object by its slug
 
         :param slug:
             slug of the page to find

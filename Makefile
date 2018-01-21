@@ -7,7 +7,7 @@ develop:
 	pip install -e .
 
 doc:
-	(cd doc; make doc)
+	(cd doc; make apidoc html man)
 
 test:
 	pycodestyle posty tests

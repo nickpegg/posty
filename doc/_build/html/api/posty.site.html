@@ -1,0 +1,222 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>posty.site module &#8212; Posty 2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="posty.util module" href="posty.util.html" />
+    <link rel="prev" title="posty.post module" href="posty.post.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-posty.site">
+<span id="posty-site-module"></span><h1>posty.site module<a class="headerlink" href="#module-posty.site" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="posty.site.Site">
+<em class="property">class </em><code class="descclassname">posty.site.</code><code class="descname">Site</code><span class="sig-paren">(</span><em>site_path='.'</em>, <em>config_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posty/site.html#Site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#posty.site.Site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Representation of an entire site with posts and pages. This is the main
+class that conrols everything.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>site_path</strong> – Path to the directory containing site content (pages, posts, templates)</li>
+<li><strong>config_path</strong> – Path to the config file, defaults to <code class="docutils literal"><span class="pre">$SITE_PATH/config.yml</span></code></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="posty.site.Site.config">
+<code class="descname">config</code><a class="headerlink" href="#posty.site.Site.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns this site’s config as read from the config file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="posty.site.Site.copyright">
+<code class="descname">copyright</code><a class="headerlink" href="#posty.site.Site.copyright" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a string of the copyright info, based on the configured author
+and the years of the first and last post</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="posty.site.Site.init">
+<code class="descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posty/site.html#Site.init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#posty.site.Site.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a new Posty site at the given path</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="posty.site.Site.load">
+<code class="descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posty/site.html#Site.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#posty.site.Site.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the site from files on disk into our internal representation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="posty.site.Site.page">
+<code class="descname">page</code><span class="sig-paren">(</span><em>slug</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posty/site.html#Site.page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#posty.site.Site.page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Page object by its slug</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>slug</strong> – slug of the page to find</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A page dict</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="posty.exceptions.html#posty.exceptions.PostyError" title="posty.exceptions.PostyError"><strong>PostyError</strong></a> – if no page could be found</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="posty.site.Site.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>slug</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posty/site.html#Site.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#posty.site.Site.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a Post object by its slug</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>slug</strong> – slug of the post to find</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A post dict</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="posty.exceptions.html#posty.exceptions.PostyError" title="posty.exceptions.PostyError"><strong>PostyError</strong></a> – if no post could be found</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="posty.site.Site.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>output_path='build'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posty/site.html#Site.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#posty.site.Site.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the site with the various renderers</p>
+<ul class="simple">
+<li>HTML</li>
+<li>JSON</li>
+<li>RSS (if <code class="docutils literal"><span class="pre">feeds.rss</span></code> is True in the config)</li>
+<li>Atom (if <code class="docutils literal"><span class="pre">feeds.atom</span></code> is True in the config)</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">CLI Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Config File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../schema.html">Post and Page Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../templating.html">Templating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../importing.html">Importing From Other Static Site Generators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module docs:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">posty</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="posty.html">posty package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="posty.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="posty.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="posty.config.html">posty.config module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="posty.exceptions.html">posty.exceptions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="posty.importers.html">posty.importers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="posty.model.html">posty.model module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="posty.page.html">posty.page module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="posty.post.html">posty.post module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">posty.site module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="posty.util.html">posty.util module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="posty.html#module-posty">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">posty</a><ul>
+  <li><a href="posty.html">posty package</a><ul>
+      <li>Previous: <a href="posty.post.html" title="previous chapter">posty.post module</a></li>
+      <li>Next: <a href="posty.util.html" title="next chapter">posty.util module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nick Pegg.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/posty.site.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

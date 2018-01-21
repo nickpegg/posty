@@ -12,6 +12,13 @@ else:
 
 
 class Config(MutableMapping):
+    """
+    Config object that gets passed around to various other objects. Loads
+    config from a given YAML file.
+
+    :param path:
+        Path to a YAML file to read in as config
+    """
     def __init__(self, path='config.yml'):
         self.path = path
         self.config = {}

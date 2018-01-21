@@ -1,0 +1,156 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>posty.renderer.base module &#8212; Posty 2.0 documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="posty.renderer.feed module" href="posty.renderer.feed.html" />
+    <link rel="prev" title="posty.renderer.atom module" href="posty.renderer.atom.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-posty.renderer.base">
+<span id="posty-renderer-base-module"></span><h1>posty.renderer.base module<a class="headerlink" href="#module-posty.renderer.base" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="posty.renderer.base.Renderer">
+<em class="property">class </em><code class="descclassname">posty.renderer.base.</code><code class="descname">Renderer</code><span class="sig-paren">(</span><em>site</em>, <em>output_path='build'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posty/renderer/base.html#Renderer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#posty.renderer.base.Renderer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Base class that all renderers inherit off of. Each child class must
+implement <code class="docutils literal"><span class="pre">render_site()</span></code> with their own rendering logic.</p>
+<dl class="method">
+<dt id="posty.renderer.base.Renderer.ensure_output_path">
+<code class="descname">ensure_output_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posty/renderer/base.html#Renderer.ensure_output_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#posty.renderer.base.Renderer.ensure_output_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure that the output directory <code class="docutils literal"><span class="pre">self.output_path</span></code> exists</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="posty.renderer.base.Renderer.render_site">
+<code class="descname">render_site</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/posty/renderer/base.html#Renderer.render_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#posty.renderer.base.Renderer.render_site" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h3><a href="../index.html">Table Of Contents</a></h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">CLI Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Config File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../schema.html">Post and Page Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../templating.html">Templating</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../importing.html">Importing From Other Static Site Generators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Module docs:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">posty</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="posty.html">posty package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="posty.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="posty.renderer.html">posty.renderer package</a><ul class="current">
+<li class="toctree-l5 current"><a class="reference internal" href="posty.renderer.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l6"><a class="reference internal" href="posty.renderer.atom.html">posty.renderer.atom module</a></li>
+<li class="toctree-l6 current"><a class="current reference internal" href="#">posty.renderer.base module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="posty.renderer.feed.html">posty.renderer.feed module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="posty.renderer.html.html">posty.renderer.html module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="posty.renderer.json.html">posty.renderer.json module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="posty.renderer.rss.html">posty.renderer.rss module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="posty.renderer.util.html">posty.renderer.util module</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="posty.renderer.html#module-posty.renderer">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="posty.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="posty.html#module-posty">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">posty</a><ul>
+  <li><a href="posty.html">posty package</a><ul>
+  <li><a href="posty.renderer.html">posty.renderer package</a><ul>
+      <li>Previous: <a href="posty.renderer.atom.html" title="previous chapter">posty.renderer.atom module</a></li>
+      <li>Next: <a href="posty.renderer.feed.html" title="next chapter">posty.renderer.feed module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Nick Pegg.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/api/posty.renderer.base.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
