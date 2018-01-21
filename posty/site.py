@@ -70,6 +70,9 @@ class Site(object):
 
         self._load_pages()
         self._load_posts()
+
+        self.payload['copyright'] = self.copyright
+
         self.loaded = True
 
     def render(self, output_path='build'):
@@ -172,9 +175,6 @@ class Site(object):
         Returns a string of the copyright info, based on the configured author
         and the years of the first and last post
         """
-        if not self.loaded:
-            raise PostyError('You must run load() on this site first!')
-
         first_post = self.payload['posts'][-1]
         last_post = self.payload['posts'][0]
 
