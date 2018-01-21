@@ -113,7 +113,7 @@ class HtmlRenderer(Renderer):
         if len(groups) > 0:
             next_page_url = urljoin(base_page_url, str(2) + '/')
         self._render_file(dst_file, template, site=self.site.payload,
-                         posts=posts, next_page_url=next_page_url)
+                          posts=posts, next_page_url=next_page_url)
 
         # Render the rest
         last_page = len(groups) + 1
@@ -178,7 +178,8 @@ class HtmlRenderer(Renderer):
             os.makedirs(dst_dir)
         template = self.jinja_env.get_template(template_name)
 
-        self._render_file(dst_file, template, site=self.site.payload, page=page)
+        self._render_file(dst_file, template, site=self.site.payload,
+                          page=page)
 
     def render_post(self, post, template_name='post.html'):
         """
@@ -193,4 +194,5 @@ class HtmlRenderer(Renderer):
             os.makedirs(dst_dir)
         template = self.jinja_env.get_template(template_name)
 
-        self._render_file(dst_file, template, site=self.site.payload, post=post)
+        self._render_file(dst_file, template, site=self.site.payload,
+                          post=post)
