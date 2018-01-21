@@ -4,3 +4,4 @@ dist
 __pycache__
 MANIFEST
 *.egg-info
+doc/_build
