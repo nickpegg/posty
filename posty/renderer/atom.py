@@ -8,6 +8,9 @@ from .feed import FeedRenderer
 
 
 class AtomRenderer(FeedRenderer):
+    """
+    Renderer that outputs an Atom feed XML file
+    """
     filename = 'atom.xml'
 
     def url(self):
@@ -18,7 +21,7 @@ class AtomRenderer(FeedRenderer):
 
     def output(self):
         """
-        Output the RSS feed file
+        Output the Atom feed file
         """
         self.ensure_output_path()
         dst = os.path.join(self.output_path, self.filename)

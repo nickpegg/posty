@@ -17,7 +17,14 @@ class ABC(with_metaclass(abc.ABCMeta)):
 
 class Model(ABC, MutableMapping):
     """
-    Object to represent a thing stored as YAML, such as a Post or a Page
+    Base class for objects representing things stored as YAML, such as a Post
+    or a Page
+
+    :param payload:
+        A dict representing the backing payload for this object
+
+    :param config:
+        A Config object
     """
     def __init__(self, payload, config=None):
         self.payload = payload

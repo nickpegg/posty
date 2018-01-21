@@ -8,7 +8,14 @@ from .util import markdown
 
 
 class JsonRenderer(Renderer):
+    """
+    Renderer that outputs a JSON representation of the Site to ``site.json``
+    within the output directory
+    """
     def render_site(self):
+        """
+        Render the Site to ``site.json``
+        """
         self.ensure_output_path()
 
         json_path = os.path.join(self.output_path, 'site.json')

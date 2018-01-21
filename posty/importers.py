@@ -13,14 +13,16 @@ from .model import ABC
 
 
 class Importer(ABC):
-    def __init__(self, site, src_path):
-        """
-        :param site:
-            Site object for the destination
+    """
+    Base class for all importers
 
-        :param src_path:
-            Path to the thing to import
-        """
+    :param site:
+        Site object for the destination
+
+    :param src_path:
+        Path to the thing to import
+    """
+    def __init__(self, site, src_path):
         self.site = site
         self.src_path = src_path
 

@@ -8,6 +8,9 @@ from .feed import FeedRenderer
 
 
 class RssRenderer(FeedRenderer):
+    """
+    Renderer that outputs a RSS feed XML file
+    """
     filename = 'rss.xml'
 
     def url(self):

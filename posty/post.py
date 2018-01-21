@@ -11,6 +11,9 @@ from .util import slugify
 
 
 class Post(Model):
+    """
+    Representation of a post
+    """
     @classmethod
     def from_yaml(cls, file_contents, config=None):
         """
