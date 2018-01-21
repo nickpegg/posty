@@ -7,7 +7,13 @@ from .config import Config
 from .exceptions import PostyError
 from .page import Page
 from .post import Post
-from .renderer import HtmlRenderer, JsonRenderer, RssRenderer, AtomRenderer
+from .renderer import (
+    HtmlRenderer,
+    JsonRenderer,
+    RssRenderer,
+    AtomRenderer,
+    Posty1RedirectRenderer
+)
 from .util import slugify
 
 
@@ -77,6 +83,9 @@ class Site(object):
             RssRenderer(self, output_path=output_path).render_site()
         if self.config['feeds']['atom']:
             AtomRenderer(self, output_path=output_path).render_site()
+
+        if self.config['compat']['redirect_posty1_urls']:
+            Posty1RedirectRenderer(self, output_path=output_path).render_site()
 
     def _load_pages(self):
         pages = []
