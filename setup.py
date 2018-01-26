@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='posty',
-    version='2.0.2',
+    version='2.0.3',
     author='Nick Pegg',
     author_email='nick@nickpegg.com',
     url='https://github.com/nickpegg/posty',
@@ -13,7 +13,7 @@ containing YAML metadata and Markdown text, and renders them as HTML.
 """,
 
     packages=find_packages(exclude=['tests', 'tests.*']),
-    package_data={'posty': ['skel/*/.keep']},
+    package_data={'posty': ['skel/*/**']},
     scripts=['bin/posty'],
 
     python_requires='>=2.7',
