@@ -1,8 +1,8 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name='posty',
-    version='2.0.1',
+    version='2.0.2',
     author='Nick Pegg',
     author_email='nick@nickpegg.com',
     url='https://github.com/nickpegg/posty',
@@ -12,7 +12,7 @@ A simple static site generator tool. Reads in a series of posts and pages
 containing YAML metadata and Markdown text, and renders them as HTML.
 """,
 
-    packages=['posty'],
+    packages=find_packages(exclude=['tests', 'tests.*']),
     package_data={'posty': ['skel/*/.keep']},
     scripts=['bin/posty'],
 

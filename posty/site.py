@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from collections import Counter
 import datetime
 import os.path
@@ -7,7 +9,7 @@ from .config import Config
 from .exceptions import PostyError
 from .page import Page
 from .post import Post
-from .renderer import (
+from posty.renderer import (
     HtmlRenderer,
     JsonRenderer,
     RssRenderer,
