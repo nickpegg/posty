@@ -1,4 +1,5 @@
 -r requirements.txt
+setuptools
 bpython~=0.16
 flake8~=3.5.0
 pycodestyle~=2.3.1

@@ -3,7 +3,7 @@
 all: develop doc test
 
 clean:
-	rm -rf dist
+	rm -rf dist build
 	rm -rf doc/_build
 
 develop:
@@ -19,8 +19,9 @@ test:
 
 # Release-related actions
 dist:
-	python setup.py sdist
+	python setup.py sdist bdist_wheel
 	gpg --detach-sign -a dist/*tar.gz
+	gpg --detach-sign -a dist/*whl
 
 upload:
-	twine upload dist/*tar.gz dist/*asc
+	twine upload dist/*tar.gz dst/*whl dist/*asc
