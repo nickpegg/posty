@@ -24,4 +24,4 @@ dist:
 	gpg --detach-sign -a dist/*whl
 
 upload:
-	twine upload dist/*tar.gz dst/*whl dist/*asc
+	twine upload dist/*tar.gz dist/*whl dist/*asc
