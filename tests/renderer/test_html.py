@@ -26,7 +26,6 @@ def test_jinja_in_markdown(renderer):
     expected! This allows folks to use Jinja filters inside markdown!
     """
     renderer.ensure_output_path()
-    renderer.prepare_content()
 
     test_page = renderer.site.page('jinja-in-markdown')
     renderer.render_page(test_page, template_name='simple_page.html')

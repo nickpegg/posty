@@ -4,7 +4,7 @@ import json
 import os
 
 from .base import Renderer
-from .util import markdown
+from .util import markdown_func
 
 
 class JsonRenderer(Renderer):
@@ -23,6 +23,8 @@ class JsonRenderer(Renderer):
             'pages': [],
             'posts': [],
         }
+
+        markdown = markdown_func(self.site)
 
         for page in self.site.payload['pages']:
             p = page.as_dict()
