@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 
 from .. import util
 from .base import Renderer
-from .util import markdown, media_url_func, absolute_url_func
+from .util import markdown_func, media_url_func, absolute_url_func
 
 # Route reference
 # /               Posts
@@ -41,7 +41,7 @@ class HtmlRenderer(Renderer):
         )
 
         filters = self.jinja_env.filters
-        filters['markdown'] = markdown
+        filters['markdown'] = markdown_func(self.site)
         filters['media_url'] = media_url_func(self.site)
         filters['absolute_url'] = absolute_url_func(self.site)
 
@@ -55,8 +55,6 @@ class HtmlRenderer(Renderer):
 
         :param site: a loaded Site object
         """
-        self.prepare_content()
-
         for post in self.site.payload['posts']:
             self.render_post(post)
 
@@ -65,21 +63,6 @@ class HtmlRenderer(Renderer):
 
         self.render_site_posts()
         self.render_site_tags()
-
-    def prepare_content(self):
-        """
-        Do a first-pass rendering of each post and page text, treating the text
-        as Jinja2 templates. This lets us use basic jinja in the markdown to
-        be able to use filter functions like this:
-
-        ``{{ "img/cool_pic.jpg" | media_url }}``
-        """
-        for page in self.site.payload['pages']:
-            page['body'] = self.jinja_env.from_string(page['body']).render()
-
-        for post in self.site.payload['posts']:
-            post['blurb'] = self.jinja_env.from_string(post['blurb']).render()
-            post['body'] = self.jinja_env.from_string(post['body']).render()
 
     def render_posts(self, posts, prefix='', template_name='posts.html'):
         """

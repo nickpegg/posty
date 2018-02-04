@@ -5,7 +5,7 @@ from feedgen.feed import FeedGenerator
 import pytz
 
 from .base import Renderer
-from .util import markdown
+from .util import markdown_func
 
 
 class FeedRenderer(Renderer):
@@ -55,6 +55,7 @@ class FeedRenderer(Renderer):
             )
             entry.published(pub_date)
 
+            markdown = markdown_func(self.site)
             entry.summary(markdown(post['blurb']))
             entry.content(markdown(post['body']))
 
