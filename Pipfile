@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+awesome-slugify = "~=1.6.5"
+click = "~=6.7"
+feedgen = "~=0.6.1"
+future = "~=0.16.0"
+pytz = ">=2017.3"
+"Jinja2" = "~=2.10"
+Markdown = "~=2.6.11"
+PyYAML = "~=3.12"
+
+[dev-packages]
+setuptools = "*"
+bpython = "~=0.16"
+flake8 = "~=3.5.0"
+pycodestyle = "~=2.3.1"
+pytest = "~=3.3.2"
+pytest-watch  = "~=4.1.0"
+Sphinx = "~=1.6.6"
+sphinx_rtd_theme = "*"
+sphinx-click = "*"
+twine = "*"
+
+[requires]
+python_version = "3.6"
