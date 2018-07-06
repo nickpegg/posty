@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = sphinx-build
+SPHINXBUILD   = pipenv run sphinx-build
 SPHINXPROJ    = Posty
 SOURCEDIR     = .
 BUILDDIR      = _build
@@ -13,10 +13,10 @@ help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 livehtml:
-	sphinx-autobuild -b html $(SPHINXOPTS) "$(SOURCEDIR)" "$(BUILDDIR)/html"
+	pipenv run sphinx-autobuild -b html $(SPHINXOPTS) "$(SOURCEDIR)" "$(BUILDDIR)/html"
 
 apidoc:
-	sphinx-apidoc -f -e -o api ../posty
+	pipenv run sphinx-apidoc -f -e -o api ../posty
 
 .PHONY: help Makefile
 
