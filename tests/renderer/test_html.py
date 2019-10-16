@@ -6,8 +6,8 @@ from posty.renderer import HtmlRenderer
 from ..fixtures import site  # noqa
 
 
-@pytest.fixture     # noqa
-def renderer(site):
+@pytest.fixture
+def renderer(site):     # noqa
     site.load()
     return HtmlRenderer(site)
 

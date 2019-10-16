@@ -6,8 +6,8 @@ from posty.importers import Posty1Importer
 
 
 class TestPosty1Importer(object):
-    @pytest.fixture     # noqa
-    def importer(self, posty1_site_path, empty_posty_site):
+    @pytest.fixture
+    def importer(self, posty1_site_path, empty_posty_site):     # noqa
         return Posty1Importer(empty_posty_site, posty1_site_path)
 
     @pytest.fixture

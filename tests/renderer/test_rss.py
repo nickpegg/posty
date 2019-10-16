@@ -6,8 +6,8 @@ from posty.renderer import RssRenderer
 from ..fixtures import site  # noqa
 
 
-@pytest.fixture     # noqa
-def renderer(site):
+@pytest.fixture
+def renderer(site):     # noqa
     site.load()
     return RssRenderer(site)
 
