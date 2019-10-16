@@ -11,7 +11,7 @@ future = "*"
 pytz = ">=2017.3"
 "Jinja2" = "*"
 Markdown = "*"
-PyYAML = "*"
+PyYAML = ">=5.1"
 
 [dev-packages]
 setuptools = "*"

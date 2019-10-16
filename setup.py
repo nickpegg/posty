@@ -25,6 +25,6 @@ containing YAML metadata and Markdown text, and renders them as HTML.
         'Jinja2>=2.10',
         'Markdown>=2.6.11',
         'pytz>=2017.3',
-        'PyYAML>=3.12',
+        'PyYAML>=5.1',
     ],
 )
