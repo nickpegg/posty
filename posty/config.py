@@ -33,7 +33,7 @@ class Config(MutableMapping):
                 'Unable to read config at {}'.format(self.path)
             )
 
-        self.config = yaml.load(open(self.path).read())
+        self.config = yaml.safe_load(open(self.path).read())
         self.clean_config()
         return self
 

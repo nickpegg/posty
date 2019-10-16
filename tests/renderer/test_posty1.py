@@ -7,8 +7,8 @@ from posty.util import slugify_posty1
 from ..fixtures import site  # noqa
 
 
-@pytest.fixture     # noqa
-def renderer(site):
+@pytest.fixture
+def renderer(site):     # noqa
     site.load()
     return Posty1RedirectRenderer(site)
 

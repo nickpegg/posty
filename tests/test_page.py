@@ -14,8 +14,8 @@ def page_contents():
     return open(path).read()
 
 
-@pytest.fixture     # noqa
-def page(config, page_contents):
+@pytest.fixture
+def page(config, page_contents):    # noqa
     """
     Basic top-level page (has no parent)
     """

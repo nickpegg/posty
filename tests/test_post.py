@@ -15,8 +15,8 @@ def post_contents():
     return open(path).read()
 
 
-@pytest.fixture     # noqa
-def post(config, post_contents):
+@pytest.fixture
+def post(config, post_contents):    # noqa
     """
     Basic post
     """

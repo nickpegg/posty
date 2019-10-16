@@ -12,7 +12,7 @@ else:
 
 
 class ABC(with_metaclass(abc.ABCMeta)):
-        pass
+    pass
 
 
 class Model(ABC, MutableMapping):

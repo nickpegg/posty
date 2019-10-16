@@ -24,7 +24,7 @@ class Post(Model):
             # nothing before the first ---
             parts.pop(0)
 
-        post = yaml.load(parts[0])
+        post = yaml.safe_load(parts[0])
 
         if len(parts[1:]) == 1:
             # Post that has no blurb, just a body

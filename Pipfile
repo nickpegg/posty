@@ -4,26 +4,27 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-awesome-slugify = "~=1.6.5"
-click = "~=6.7"
-feedgen = "~=0.6.1"
-future = "~=0.16.0"
+awesome-slugify = "*"
+click = "~=6.0"
+feedgen = "*"
+future = "*"
 pytz = ">=2017.3"
-"Jinja2" = "~=2.10"
-Markdown = "~=2.6.11"
-PyYAML = "~=3.12"
+"Jinja2" = "*"
+Markdown = "*"
+PyYAML = ">=5.1"
 
 [dev-packages]
 setuptools = "*"
-bpython = "~=0.16"
-flake8 = "~=3.5.0"
-pycodestyle = "~=2.3.1"
-pytest = "~=3.3.2"
-pytest-watch  = "~=4.1.0"
-Sphinx = "~=1.6.6"
+bpython = "*"
+flake8 = "*"
+pycodestyle = "*"
+pytest = "*"
+pytest-watch  = "*"
+Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-click = "*"
-twine = "*"
+# Newer twine requires Python >= 3.6
+twine = "<2.0.0"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
