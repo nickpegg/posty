@@ -18,13 +18,13 @@ containing YAML metadata and Markdown text, and renders them as HTML.
 
     python_requires='>=2.7',
     install_requires=[
-        'awesome-slugify>=1.6.5,<1.7.0',
+        'awesome-slugify>=1.6.5',
         'click>=6.7,<7.0',
-        'feedgen>=0.6.1,<0.7.0',
-        'future>=0.16.0,<0.17.0',
-        'Jinja2>=2.10,<3.0',
-        'Markdown>=2.6.11,<2.7.0',
+        'feedgen>=0.6.1',
+        'future>=0.16.0',
+        'Jinja2>=2.10',
+        'Markdown>=2.6.11',
         'pytz>=2017.3',
-        'PyYAML>=3.12,<4.0',
+        'PyYAML>=3.12',
     ],
 )
