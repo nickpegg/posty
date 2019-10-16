@@ -23,7 +23,8 @@ pytest-watch  = "*"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-click = "*"
-twine = "*"
+# Newer twine requires Python >= 3.6
+twine = "<2.0.0"
 
 [requires]
 python_version = "3.7"
