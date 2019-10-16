@@ -24,7 +24,7 @@ class Page(Model):
             parts.pop(0)
 
         meta_yaml, body = parts
-        payload = yaml.load(meta_yaml)
+        payload = yaml.safe_load(meta_yaml)
         payload['body'] = body.strip()
 
         return cls(payload, config=config)

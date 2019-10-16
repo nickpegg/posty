@@ -118,7 +118,7 @@ class Posty1Importer(Importer):
         docs = old_page.split("---\n")
         new_page = ''
 
-        meta = yaml.load(docs[1])
+        meta = yaml.safe_load(docs[1])
         if 'url' in meta.keys():
             del meta['url']
         new_page += yaml.dump(meta, default_flow_style=False)
@@ -142,7 +142,7 @@ class Posty1Importer(Importer):
         new_post = ''
 
         # Convert the metadata
-        meta = yaml.load(docs[1])
+        meta = yaml.safe_load(docs[1])
         meta.setdefault('tags', [])
         new_post += yaml.dump(meta, default_flow_style=False)
 
