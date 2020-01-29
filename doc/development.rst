@@ -1,8 +1,8 @@
 Development
 ===========
 
-All development is currently done against Python 3.5 (the latest available in
-Ubuntu 16.04), and all CI tests are ran against version 2.7, 3.5, and 3.6.
+All development is currently done against Python 3.7 and all CI tests are ran against
+Python versions 3.6 and beyond.
 
 Bootstrapping
 -------------

@@ -1,5 +1,5 @@
-posty\.renderer package
-=======================
+posty.renderer package
+======================
 
 Submodules
 ----------
@@ -19,6 +19,6 @@ Module contents
 ---------------
 
 .. automodule:: posty.renderer
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

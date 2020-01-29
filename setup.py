@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='posty',
-    version='2.0.3',
+    version='2.1.0',
     author='Nick Pegg',
     author_email='nick@nickpegg.com',
     url='https://github.com/nickpegg/posty',

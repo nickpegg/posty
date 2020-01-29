@@ -6,7 +6,7 @@ Subpackages
 
 .. toctree::
 
-    posty.renderer
+   posty.renderer
 
 Submodules
 ----------
@@ -27,6 +27,6 @@ Module contents
 ---------------
 
 .. automodule:: posty
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,7 +1,7 @@
-posty\.renderer\.json module
-============================
+posty.renderer.json module
+==========================
 
 .. automodule:: posty.renderer.json
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

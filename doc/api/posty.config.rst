@@ -1,7 +1,7 @@
-posty\.config module
-====================
+posty.config module
+===================
 
 .. automodule:: posty.config
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
