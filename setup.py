@@ -20,7 +20,7 @@ containing YAML metadata and Markdown text, and renders them as HTML.
     install_requires=[
         'awesome-slugify>=1.6.5',
         'click>=6.7,<7.0',
-        'feedgen>=0.6.1',
+        'feedgen>=0.9.0',
         'future>=0.16.0',
         'Jinja2>=2.10',
         'Markdown>=2.6.11',

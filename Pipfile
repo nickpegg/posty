@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 awesome-slugify = "*"
 click = "~=6.0"
-feedgen = "*"
+feedgen = ">=0.9.0"
 future = "*"
 pytz = ">=2017.3"
 "Jinja2" = "*"
