@@ -1,7 +1,7 @@
-posty\.model module
-===================
+posty.model module
+==================
 
 .. automodule:: posty.model
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

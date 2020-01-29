@@ -1,7 +1,7 @@
-posty\.util module
-==================
+posty.util module
+=================
 
 .. automodule:: posty.util
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

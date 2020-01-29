@@ -1,7 +1,7 @@
-posty\.exceptions module
-========================
+posty.exceptions module
+=======================
 
 .. automodule:: posty.exceptions
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

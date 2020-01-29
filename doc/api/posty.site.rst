@@ -1,7 +1,7 @@
-posty\.site module
-==================
+posty.site module
+=================
 
 .. automodule:: posty.site
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

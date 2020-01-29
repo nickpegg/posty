@@ -1,7 +1,7 @@
-posty\.renderer\.html module
-============================
+posty.renderer.html module
+==========================
 
 .. automodule:: posty.renderer.html
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

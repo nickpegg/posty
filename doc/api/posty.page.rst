@@ -1,7 +1,7 @@
-posty\.page module
-==================
+posty.page module
+=================
 
 .. automodule:: posty.page
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

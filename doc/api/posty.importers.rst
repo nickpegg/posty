@@ -1,7 +1,7 @@
-posty\.importers module
-=======================
+posty.importers module
+======================
 
 .. automodule:: posty.importers
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

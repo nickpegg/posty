@@ -1,7 +1,7 @@
-posty\.renderer\.feed module
-============================
+posty.renderer.feed module
+==========================
 
 .. automodule:: posty.renderer.feed
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
