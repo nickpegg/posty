@@ -20,9 +20,9 @@ test:
 
 # Release-related actions
 dist:
-	python setup.py sdist bdist_wheel
+	pipenv run python setup.py sdist bdist_wheel
 	gpg --detach-sign -a dist/*tar.gz
 	gpg --detach-sign -a dist/*whl
 
 upload:
-	twine upload dist/*tar.gz dist/*whl dist/*asc
+	pipenv run twine upload dist/*tar.gz dist/*whl dist/*asc

@@ -25,6 +25,7 @@ Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-click = "*"
 twine = "*"
+wheel = "*"
 
 [requires]
 python_version = "3.7"
