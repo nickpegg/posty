@@ -16,7 +16,7 @@ containing YAML metadata and Markdown text, and renders them as HTML.
     package_data={'posty': ['skel/*/**']},
     scripts=['bin/posty'],
 
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     install_requires=[
         'awesome-slugify>=1.6.5',
         'click>=6.7,<7.0',

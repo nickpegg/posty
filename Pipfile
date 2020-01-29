@@ -12,6 +12,7 @@ pytz = ">=2017.3"
 "Jinja2" = "*"
 Markdown = "*"
 PyYAML = ">=5.1"
+twine = "*"
 
 [dev-packages]
 setuptools = "*"
@@ -23,8 +24,7 @@ pytest-watch  = "*"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-click = "*"
-# Newer twine requires Python >= 3.6
-twine = "<2.0.0"
+twine = "*"
 
 [requires]
 python_version = "3.7"
