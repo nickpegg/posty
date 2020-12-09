@@ -1,5 +1,4 @@
 from future.standard_library import install_aliases
-install_aliases()   # noqa
 
 import os.path
 from urllib.parse import urljoin
@@ -8,6 +7,8 @@ import yaml
 from .exceptions import InvalidObject
 from .model import Model
 from .util import slugify
+
+install_aliases()   # noqa
 
 
 class Post(Model):

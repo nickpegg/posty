@@ -1,9 +1,10 @@
 from future.standard_library import install_aliases
-install_aliases()   # noqa
 
 import jinja2
 from markdown import markdown as md
 from urllib.parse import urljoin
+
+install_aliases()   # noqa
 
 # Jinja2 template filters
 

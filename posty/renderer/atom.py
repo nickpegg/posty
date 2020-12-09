@@ -1,10 +1,11 @@
 from future.standard_library import install_aliases
-install_aliases()   # noqa
 
 import os
 from urllib.parse import urljoin
 
 from .feed import FeedRenderer
+
+install_aliases()   # noqa
 
 
 class AtomRenderer(FeedRenderer):
