@@ -7,22 +7,22 @@ clean:
 	rm -rf doc/_build
 
 develop:
-	pip install pipenv
-	pipenv install -d
+	pip install poetry
+	poetry install
 
 doc:
 	(cd doc; make apidoc html man)
 
 test:
-	pipenv run pycodestyle posty tests
-	pipenv run flake8 posty tests
-	pipenv run pytest
+	poetry run pycodestyle posty tests
+	poetry run flake8 posty tests
+	poetry run pytest
 
 # Release-related actions
 dist:
-	pipenv run python setup.py sdist bdist_wheel
+	poetry build
 	gpg --detach-sign -a dist/*tar.gz
 	gpg --detach-sign -a dist/*whl
 
-upload:
-	pipenv run twine upload dist/*tar.gz dist/*whl dist/*asc
+upload: dist
+	poetry publish --dry-run
