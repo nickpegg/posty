@@ -1,5 +1,3 @@
-from future.standard_library import install_aliases
-
 from collections import defaultdict
 import jinja2
 import os
@@ -8,8 +6,6 @@ from urllib.parse import urljoin
 from .. import util
 from .base import Renderer
 from .util import markdown_func, media_url_func, absolute_url_func
-
-install_aliases()   # noqa
 
 # Route reference
 # /               Posts

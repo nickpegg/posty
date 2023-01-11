@@ -1,10 +1,9 @@
 import abc
 import copy
-from future.utils import with_metaclass
 import os
 
 
-class Renderer(with_metaclass(abc.ABCMeta)):
+class Renderer(metaclass=abc.ABCMeta):
     """
     Base class that all renderers inherit off of. Each child class must
     implement ``render_site()`` with their own rendering logic.
