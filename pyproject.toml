@@ -6,7 +6,7 @@ authors = ["Nick Pegg <nick@nickpegg.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.7"
 awesome-slugify = "^1.6.5"
 click = "^7.0"
 feedgen = "^0.9.0"
