@@ -21,10 +21,9 @@ containing YAML metadata and Markdown text, and renders them as HTML.
         'awesome-slugify>=1.6.5',
         'click>=7.0,<8.0',
         'feedgen>=0.9.0',
-        'future>=0.16.0',
-        'Jinja2>=2.10',
-        'Markdown>=2.6.11',
+        'Jinja2>=3.1',
+        'Markdown>=3.3',
         'pytz>=2017.3',
-        'PyYAML>=5.4',
+        'PyYAML>=6.0',
     ],
 )
