@@ -1,5 +1,4 @@
 import abc
-from future.utils import with_metaclass
 import sys
 
 from .config import Config
@@ -11,7 +10,7 @@ else:
     from collections import MutableMapping
 
 
-class ABC(with_metaclass(abc.ABCMeta)):
+class ABC(metaclass=abc.ABCMeta):
     pass
 
 

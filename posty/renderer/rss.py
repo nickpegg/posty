@@ -1,11 +1,7 @@
-from future.standard_library import install_aliases
-
 import os
 from urllib.parse import urljoin
 
 from .feed import FeedRenderer
-
-install_aliases()   # noqa
 
 
 class RssRenderer(FeedRenderer):
