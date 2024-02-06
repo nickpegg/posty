@@ -6,7 +6,7 @@ authors = ["Nick Pegg <nick@nickpegg.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 awesome-slugify = "^1.6.5"
 click = "^7.0"
 feedgen = "^0.9.0"
@@ -18,11 +18,7 @@ PyYAML = "^6.0"
 [tool.poetry.dev-dependencies]
 setuptools = "*"
 bpython = "*"
-# flake8 6.0 requires python 3.8 or newer
-flake8 = [
-  {version = "^5", python = "^3.7"},
-  {version = "*"},
-]
+flake8 = "*"
 pycodestyle = "*"
 pytest = "*"
 pytest-watch = "*"
