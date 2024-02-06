@@ -7,7 +7,7 @@ clean:
 	rm -rf doc/_build
 
 develop:
-	which pyenv >/dev/null && pyenv install -s
+	which pyenv >/dev/null && pyenv install -s || true
 	pip install --upgrade pip poetry
 	poetry install
 
