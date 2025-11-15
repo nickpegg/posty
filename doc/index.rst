@@ -23,6 +23,11 @@ containing YAML metadata and Markdown text, and renders them as HTML.
    development
 
 .. toctree::
+   :maxdepth: 1
+
+   changelog
+
+.. toctree::
    :caption: Module docs:
 
    api/modules
