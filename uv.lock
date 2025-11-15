@@ -934,6 +934,13 @@ dependencies = [
     { name = "pyyaml" },
 ]
 
+[package.optional-dependencies]
+docs = [
+    { name = "sphinx" },
+    { name = "sphinx-click" },
+    { name = "sphinx-rtd-theme" },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "black" },
@@ -962,7 +969,11 @@ requires-dist = [
     { name = "markdown", specifier = "~=3.3" },
     { name = "pytz" },
     { name = "pyyaml" },
+    { name = "sphinx", marker = "extra == 'docs'" },
+    { name = "sphinx-click", marker = "extra == 'docs'" },
+    { name = "sphinx-rtd-theme", marker = "extra == 'docs'" },
 ]
+provides-extras = ["docs"]
 
 [package.metadata.requires-dev]
 dev = [

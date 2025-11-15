@@ -23,6 +23,13 @@ documentation = "https://posty.readthedocs.io"
 [project.scripts]
 posty = "posty.cli:cli"
 
+[project.optional-dependencies]
+docs = [
+    "Sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-click",
+]
+
 [dependency-groups]
 dev = [
     "setuptools",
