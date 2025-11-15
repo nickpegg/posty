@@ -29,5 +29,5 @@ dist:
 	gpg --detach-sign -a dist/*tar.gz
 	gpg --detach-sign -a dist/*whl
 
-upload: dist
-	uv publish --dry-run
+publish: dist
+	uv publish

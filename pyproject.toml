@@ -1,10 +1,11 @@
 [project]
 name = "posty"
-version = "2.1.1"
+version = "2.1.1.post1"
 description = "A static site generator"
 authors = [{ name = "Nick Pegg", email = "nick@nickpegg.com" }]
 requires-python = ">=3.10"
 license = "MIT"
+readme = "README.md"
 
 dependencies = [
     "awesome-slugify~=1.6",
@@ -17,8 +18,8 @@ dependencies = [
 ]
 
 [project.urls]
-source = "https://github.com/nickpegg/posty"
-documentation = "https://posty.readthedocs.io"
+Source = "https://github.com/nickpegg/posty"
+Documentation = "https://posty.readthedocs.io"
 
 [project.scripts]
 posty = "posty.cli:cli"
