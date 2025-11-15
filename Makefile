@@ -7,23 +7,22 @@ clean:
 	rm -rf doc/_build
 
 develop:
-	which pyenv >/dev/null && pyenv install -s || true
-	pip install --upgrade pip poetry
-	poetry install
+	pip install --upgrade pip uv
+	uv sync --locked --dev
 
 doc:
 	(cd doc; make apidoc html man)
 
 test:
-	poetry run pycodestyle posty tests
-	poetry run flake8 posty tests
-	poetry run pytest
+	uv run pycodestyle posty tests
+	uv run flake8 posty tests
+	uv run pytest
 
 # Release-related actions
 dist:
-	poetry build
+	uv build
 	gpg --detach-sign -a dist/*tar.gz
 	gpg --detach-sign -a dist/*whl
 
 upload: dist
-	poetry publish --dry-run
+	uv publish --dry-run
