@@ -33,6 +33,9 @@ def bucket(_list: list[T], size: int) -> list[list[T]]:
     buckets = []
     _list = list(_list)
 
+    if size < 0:
+        return [_list]
+
     while len(_list) > 0:
         bucket = _list[:size]
         buckets.append(bucket)
