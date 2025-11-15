@@ -9,7 +9,8 @@ class AtomRenderer(FeedRenderer):
     """
     Renderer that outputs an Atom feed XML file
     """
-    filename = 'atom.xml'
+
+    filename = "atom.xml"
 
     def url(self) -> Any:
         """

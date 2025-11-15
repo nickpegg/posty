@@ -19,8 +19,9 @@ def init() -> None:
     site = Site()
     site.init()
 
-    click.echo('Posty initialized!')
-    click.echo("""
+    click.echo("Posty initialized!")
+    click.echo(
+        """
 Directories:
 - posts -> Put all of your blog posts here
 - pages -> Put all of your static pages here
@@ -29,21 +30,17 @@ Directories:
 
 There is also a config file at config.yml that you should adjust to your
 liking, like setting the site title and such.
-    """)
+    """
+    )
 
 
 @cli.command()
+@click.option("-o", "--output", help="Output directory", default="build")
 @click.option(
-    '-o',
-    '--output',
-    help='Output directory',
-    default='build'
-)
-@click.option(
-    '-c',
-    '--config',
+    "-c",
+    "--config",
     type=click.Path(exists=True),
-    help='Path to your config file',
+    help="Path to your config file",
 )
 def build(output: str, config: str) -> None:
     """
@@ -54,10 +51,10 @@ def build(output: str, config: str) -> None:
     site.render(output_path=output)
 
     # Finally, copy media into the build directory
-    shutil.copytree('media', os.path.join(output, 'media'))
+    shutil.copytree("media", os.path.join(output, "media"))
 
 
-@cli.group(name='new')
+@cli.group(name="new")
 def _new() -> None:
     """
     Create a new post or page
@@ -67,9 +64,9 @@ def _new() -> None:
 
 @_new.command()
 @click.option(
-    '--name',
-    help='Name of the new page',
-    default='New Page',
+    "--name",
+    help="Name of the new page",
+    default="New Page",
 )
 def page(name: str) -> None:
     """
@@ -81,9 +78,9 @@ def page(name: str) -> None:
 
 @_new.command()
 @click.option(
-    '--name',
-    help='Name of the new post',
-    default='New Post',
+    "--name",
+    help="Name of the new post",
+    default="New Post",
 )
 def post(name: str) -> None:
     """
@@ -93,7 +90,7 @@ def post(name: str) -> None:
     site.new_post(name=name)
 
 
-@cli.group(name='import')
+@cli.group(name="import")
 def _import() -> None:
     """
     Import a site from another static site generator
@@ -102,20 +99,20 @@ def _import() -> None:
 
 
 @_import.command()
-@click.argument('path')
+@click.argument("path")
 def posty1(path: str) -> None:
     """
     Import a Posty 1.x site from PATH
     """
-    click.echo('Importing from {}...'.format(path))
+    click.echo("Importing from {}...".format(path))
     Posty1Importer(Site(), path).run()
-    click.echo('Done!')
-    click.echo((
+    click.echo("Done!")
+    click.echo(
         "In each of your posts, I've made blurbs using the first paragraph. "
-        'Adjust to your own taste.'
-    ))
-    click.echo('You will also need to make sure to update your templates.')
+        "Adjust to your own taste."
+    )
+    click.echo("You will also need to make sure to update your templates.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()

@@ -12,7 +12,8 @@ class Renderer(metaclass=abc.ABCMeta):
     Base class that all renderers inherit off of. Each child class must
     implement ``render_site()`` with their own rendering logic.
     """
-    def __init__(self, site: "Site", output_path: str = 'build') -> None:
+
+    def __init__(self, site: "Site", output_path: str = "build") -> None:
         self.site = copy.deepcopy(site)
         self.output_path = os.path.join(site.site_path, output_path)
 

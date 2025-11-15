@@ -14,8 +14,9 @@ doc:
 	(cd doc; make apidoc html man)
 
 test:
-	uv run pycodestyle posty tests
-	uv run flake8 posty tests
+	uv run black posty tests
+	# Line length of 90 to work with Black formatting
+	uv run flake8 --max-line-length=90 posty tests
 	uv run mypy posty tests
 	uv run pytest
 

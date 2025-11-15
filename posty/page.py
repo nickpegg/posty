@@ -25,9 +25,7 @@ class Page(Model):
     _config: Config | None = None
 
     @classmethod
-    def from_yaml(
-        cls, file_contents: str, config: Config | None = None
-    ) -> "Page":
+    def from_yaml(cls, file_contents: str, config: Config | None = None) -> "Page":
         """
         Return a Page from the given file_contents
         """
@@ -38,11 +36,11 @@ class Page(Model):
 
         meta_yaml, body = parts
         payload = yaml.safe_load(meta_yaml)
-        payload['body'] = body.strip()
+        payload["body"] = body.strip()
 
         return cls(
-            title=payload['title'],
-            body=payload['body'],
+            title=payload["title"],
+            body=payload["body"],
             _config=config,
         )
 
@@ -51,9 +49,9 @@ class Page(Model):
         Returns a string of the YAML and text representation of this Post.
         This is the reverse of from_yaml
         """
-        metadata = {'title': self.title}
+        metadata = {"title": self.title}
         if self.parent:
-            metadata['parent'] = self.parent
+            metadata["parent"] = self.parent
         output = yaml.dump(metadata, default_flow_style=False)
         output += "---\n"
         output += self.body
@@ -67,15 +65,15 @@ class Page(Model):
         :raises: InvalidObject
         """
         if self.title == "":
-            raise InvalidObject('This Page is missing a title')
+            raise InvalidObject("This Page is missing a title")
         if self.body == "":
-            raise InvalidObject('This Page is missing a body')
+            raise InvalidObject("This Page is missing a body")
 
         if self.slug == "":
             self.slug = slugify(self.title)
 
     def url(self) -> Any:
-        path = '{}/'.format(self.slug)
+        path = "{}/".format(self.slug)
         return urljoin(self.config.base_url, path)
 
     def path_on_disk(self) -> str:

@@ -14,7 +14,7 @@ from posty.renderer import (
     JsonRenderer,
     RssRenderer,
     AtomRenderer,
-    Posty1RedirectRenderer
+    Posty1RedirectRenderer,
 )
 from .util import slugify
 
@@ -30,8 +30,10 @@ class Site(object):
     :param config_path:
         Path to the config file, defaults to ``$SITE_PATH/config.yml``
     """
+
     def __init__(
-        self, site_path: str = '.',
+        self,
+        site_path: str = ".",
         config_path: str | None = None,
         config: Config | None = None,
     ) -> None:
@@ -43,7 +45,7 @@ class Site(object):
             if config_path:
                 self.config_path = config_path
             else:
-                self.config_path = os.path.join(site_path, 'config.yml')
+                self.config_path = os.path.join(site_path, "config.yml")
             self.config = Config.from_yaml(self.config_path)
 
         self.pages: list[Page] = []
@@ -56,7 +58,7 @@ class Site(object):
         """
         Initialize a new Posty site at the given path
         """
-        skel_path = os.path.join(os.path.dirname(__file__), 'skel')
+        skel_path = os.path.join(os.path.dirname(__file__), "skel")
         for thing in os.listdir(skel_path):
             src = os.path.join(skel_path, thing)
             dst = os.path.join(self.site_path, thing)
@@ -77,7 +79,7 @@ class Site(object):
 
         self.loaded = True
 
-    def render(self, output_path: str = 'build') -> None:
+    def render(self, output_path: str = "build") -> None:
         """
         Render the site with the various renderers
 
@@ -99,7 +101,7 @@ class Site(object):
 
     def _load_pages(self) -> None:
         pages = []
-        page_dir = os.path.join(self.site_path, 'pages')
+        page_dir = os.path.join(self.site_path, "pages")
         for filename in os.listdir(page_dir):
             contents = open(os.path.join(page_dir, filename)).read()
             pages.append(Page.from_yaml(contents, config=self.config))
@@ -111,7 +113,7 @@ class Site(object):
         tags = []
 
         # Load each post
-        post_dir = os.path.join(self.site_path, 'posts')
+        post_dir = os.path.join(self.site_path, "posts")
         for filename in os.listdir(post_dir):
             contents = open(os.path.join(post_dir, filename)).read()
             post = Post.from_yaml(contents, config=self.config)
@@ -119,9 +121,7 @@ class Site(object):
             posts.append(post)
             tags.extend(post.tags)
 
-        self.posts = sorted(
-            posts, key=lambda x: x.date, reverse=True
-        )
+        self.posts = sorted(posts, key=lambda x: x.date, reverse=True)
 
         # uniquify tags and sort by frequency (descending)
         self.tags = [t for t, c in Counter(tags).most_common()]
@@ -145,9 +145,8 @@ class Site(object):
                 return post
         else:
             raise PostyError(
-                'Unable to find post {}. Available posts: {}'.format(
-                    slug,
-                    [slugify(p.title) for p in self.pages]
+                "Unable to find post {}. Available posts: {}".format(
+                    slug, [slugify(p.title) for p in self.pages]
                 )
             )
 
@@ -170,10 +169,8 @@ class Site(object):
                 return page
         else:
             raise PostyError(
-                'Unable to find post {}. Available posts: {}'.format(
-                    slug,
-                    [p.slug or slugify(p.title)
-                        for p in self.pages]
+                "Unable to find post {}. Available posts: {}".format(
+                    slug, [p.slug or slugify(p.title) for p in self.pages]
                 )
             )
 
@@ -186,10 +183,10 @@ class Site(object):
         first_post = self.posts[-1]
         last_post = self.posts[0]
 
-        copyright = 'Copyright {start} - {end}, {author}'.format(
+        copyright = "Copyright {start} - {end}, {author}".format(
             author=self.config.author,
             start=first_post.date.year,
-            end=last_post.date.year
+            end=last_post.date.year,
         )
 
         return copyright
@@ -198,39 +195,39 @@ class Site(object):
         """
         Create a new post in the site directory from the skeleton post
         """
-        post_dir = os.path.join(self.site_path, 'posts')
+        post_dir = os.path.join(self.site_path, "posts")
         if not os.path.exists(post_dir):
-            raise PostyError('You must initialize the site first')
+            raise PostyError("You must initialize the site first")
 
         date = datetime.date.today()
-        filename = '{}_{}.yaml'.format(date, slugify(name))
+        filename = "{}_{}.yaml".format(date, slugify(name))
         post_path = os.path.join(post_dir, filename)
 
-        skel_path = os.path.join(os.path.dirname(__file__),
-                                 'skel/posts/1970-01-01_new-post.yaml')
+        skel_path = os.path.join(
+            os.path.dirname(__file__), "skel/posts/1970-01-01_new-post.yaml"
+        )
         post = Post.from_yaml(open(skel_path).read(), config=self.config)
         post.title = name
         post.date = date
 
-        with open(post_path, 'w') as output_file:
+        with open(post_path, "w") as output_file:
             output_file.write(post.to_yaml())
 
     def new_page(self, name: str = "New Page") -> None:
         """
         Create a new page in the site directory from the skeleton page
         """
-        page_dir = os.path.join(self.site_path, 'pages')
+        page_dir = os.path.join(self.site_path, "pages")
         if not os.path.exists(page_dir):
-            raise PostyError('You must initialize the site first')
+            raise PostyError("You must initialize the site first")
 
-        filename = '{}.yaml'.format(slugify(name))
+        filename = "{}.yaml".format(slugify(name))
         page_path = os.path.join(page_dir, filename)
 
-        skel_path = os.path.join(os.path.dirname(__file__),
-                                 'skel/pages/new-page.yaml')
+        skel_path = os.path.join(os.path.dirname(__file__), "skel/pages/new-page.yaml")
 
         page = Page.from_yaml(open(skel_path).read(), config=self.config)
         page.title = name
 
-        with open(page_path, 'w') as output_file:
+        with open(page_path, "w") as output_file:
             output_file.write(page.to_yaml())

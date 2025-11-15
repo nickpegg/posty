@@ -8,7 +8,7 @@ from ..fixtures import site  # noqa
 
 
 @pytest.fixture
-def renderer(site: Site) -> AtomRenderer:     # noqa
+def renderer(site: Site) -> AtomRenderer:  # noqa
     site.load()
     return AtomRenderer(site)
 
@@ -19,5 +19,5 @@ def test_basic_case(renderer: AtomRenderer) -> None:
     """
     renderer.render_site()
 
-    rss_path = os.path.join(renderer.output_path, 'atom.xml')
+    rss_path = os.path.join(renderer.output_path, "atom.xml")
     assert os.path.exists(rss_path)

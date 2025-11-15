@@ -12,17 +12,18 @@ class FeedRenderer(Renderer):
     """
     Base class for all feed Renderers (RSS, Atom)
     """
+
     def render_site(self) -> None:
         config = self.site.config
 
         self.feed = FeedGenerator()
         self.feed.id(config.base_url)
         self.feed.title(config.title)
-        self.feed.author({'name': config.author})
+        self.feed.author({"name": config.author})
         self.feed.copyright(self.site.copyright)
-        self.feed.link(href=config.base_url, rel='alternate')
+        self.feed.link(href=config.base_url, rel="alternate")
 
-        self.feed.link(href=self.url(), rel='self')
+        self.feed.link(href=self.url(), rel="self")
 
         if config.description:
             self.feed.description(config.description)

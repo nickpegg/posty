@@ -1,6 +1,7 @@
 """
 Functions to import from various other static site generators
 """
+
 # Refactoring idea: make this into its own sub-package and use a plugin system
 
 import abc
@@ -23,6 +24,7 @@ class Importer(ABC):
     :param src_path:
         Path to the thing to import
     """
+
     def __init__(self, site: Site, src_path: str) -> None:
         self.site = site
         self.src_path = src_path
@@ -32,20 +34,19 @@ class Importer(ABC):
         raise NotImplementedError
 
     def ensure_directories(self) -> None:
-        for _dir in ('media', 'templates', 'pages', 'posts'):
+        for _dir in ("media", "templates", "pages", "posts"):
             path = os.path.join(self.site.site_path, _dir)
             if not os.path.exists(path):
                 os.mkdir(path)
             elif not os.path.isdir(path):
-                raise UnableToImport(
-                    '{} exists but is not a directory'.format(path)
-                )
+                raise UnableToImport("{} exists but is not a directory".format(path))
 
 
 class Posty1Importer(Importer):
     """
     Importer to pull from a Posty 1.x site
     """
+
     def run(self) -> None:
         self.ensure_directories()
 
@@ -55,33 +56,33 @@ class Posty1Importer(Importer):
         self.import_posts()
 
     def import_media(self) -> None:
-        self._copy_files('_media', 'media')
+        self._copy_files("_media", "media")
 
     def import_templates(self) -> None:
-        self._copy_files('_templates', 'templates')
+        self._copy_files("_templates", "templates")
 
     def import_pages(self) -> None:
-        src_dir = os.path.join(self.src_path, '_pages')
-        dst_dir = os.path.join(self.site.site_path, 'pages')
+        src_dir = os.path.join(self.src_path, "_pages")
+        dst_dir = os.path.join(self.site.site_path, "pages")
 
         for page in os.listdir(src_dir):
             src_file = os.path.join(src_dir, page)
             dst_file = os.path.join(dst_dir, page)
 
             new_page = self._convert_page(open(src_file).read())
-            with open(dst_file, 'w') as fh:
+            with open(dst_file, "w") as fh:
                 fh.write(new_page)
 
     def import_posts(self) -> None:
-        src_dir = os.path.join(self.src_path, '_posts')
-        dst_dir = os.path.join(self.site.site_path, 'posts')
+        src_dir = os.path.join(self.src_path, "_posts")
+        dst_dir = os.path.join(self.site.site_path, "posts")
 
         for post in os.listdir(src_dir):
             src_file = os.path.join(src_dir, post)
             dst_file = os.path.join(dst_dir, post)
 
             new_post = self._convert_post(open(src_file).read())
-            with open(dst_file, 'w') as fh:
+            with open(dst_file, "w") as fh:
                 fh.write(new_post)
 
     def _copy_files(self, src: str, dst: str) -> None:
@@ -107,8 +108,7 @@ class Posty1Importer(Importer):
             elif os.path.isdir(src_path):
                 shutil.copytree(src_path, dst_path)
             else:
-                print(("  Looks like {} isn't a file nor dir, "
-                       "not copying.").format(src_path))
+                print(f"  Looks like {src_path} isn't a file nor dir, not copying.")
 
     def _convert_page(self, old_page: str) -> str:
         """
@@ -117,11 +117,11 @@ class Posty1Importer(Importer):
         """
         old_page = old_page.replace("\r\n", "\n")
         docs = old_page.split("---\n")
-        new_page = ''
+        new_page = ""
 
         meta = yaml.safe_load(docs[1])
-        if 'url' in meta.keys():
-            del meta['url']
+        if "url" in meta.keys():
+            del meta["url"]
         new_page += yaml.dump(meta, default_flow_style=False)
 
         new_page += "---\n"
@@ -140,11 +140,11 @@ class Posty1Importer(Importer):
         """
         old_post = old_post.replace("\r\n", "\n")
         docs = old_post.split("---\n")
-        new_post = ''
+        new_post = ""
 
         # Convert the metadata
         meta = yaml.safe_load(docs[1])
-        meta.setdefault('tags', [])
+        meta.setdefault("tags", [])
         new_post += yaml.dump(meta, default_flow_style=False)
 
         # Create a blurb out of the first paragraph

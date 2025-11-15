@@ -27,15 +27,13 @@ def markdown_func(site: "Site") -> Callable[[str], str]:
 
     def markdown(text: str) -> str:
         jinja_env = jinja2.Environment()
-        jinja_env.filters['media_url'] = media_url_func(site)
-        jinja_env.filters['absolute_url'] = absolute_url_func(site)
+        jinja_env.filters["media_url"] = media_url_func(site)
+        jinja_env.filters["absolute_url"] = absolute_url_func(site)
 
         jinja_rendered = jinja_env.from_string(text).render()
 
         return md(
-            jinja_rendered,
-            tab_length=2,
-            extensions=['markdown.extensions.fenced_code']
+            jinja_rendered, tab_length=2, extensions=["markdown.extensions.fenced_code"]
         )
 
     return markdown
@@ -49,8 +47,9 @@ def media_url_func(site: "Site") -> Callable[[str], str]:
     For example, if the Site has its base_url set to '/foo/' then:
     img/my_picture.jpg -> /foo/media/img/my_picture.jpg
     """
+
     def media_url(path: str) -> Any:
-        base_path = urljoin(site.config.base_url, 'media/')
+        base_path = urljoin(site.config.base_url, "media/")
         return urljoin(base_path, path)
 
     return media_url
@@ -61,6 +60,7 @@ def absolute_url_func(site: "Site") -> Callable[[str], str]:
     Returns a markdown filter function that returns an absolute URL for the
     given relative URL, simply concatenating config['base_url'] with the URL.
     """
+
     def absolute_url(path: str) -> Any:
         return urljoin(site.config.base_url, path)
 

@@ -8,7 +8,7 @@ from ..fixtures import site  # noqa
 
 
 @pytest.fixture
-def renderer(site: Site) -> HtmlRenderer:     # noqa
+def renderer(site: Site) -> HtmlRenderer:  # noqa
     site.load()
     return HtmlRenderer(site)
 
@@ -28,12 +28,13 @@ def test_jinja_in_markdown(renderer: HtmlRenderer) -> None:
     """
     renderer.ensure_output_path()
 
-    test_page = renderer.site.page('jinja-in-markdown')
-    renderer.render_page(test_page, template_name='simple_page.html')
+    test_page = renderer.site.page("jinja-in-markdown")
+    renderer.render_page(test_page, template_name="simple_page.html")
 
-    output_path = os.path.join(renderer.output_path,
-                               'jinja-in-markdown/index.html')
+    output_path = os.path.join(renderer.output_path, "jinja-in-markdown/index.html")
     contents = open(output_path).read()
 
-    assert contents == ('<p>We should be able to put jinja inside of our '
-                        'templates and have it render totally normally!</p>')
+    assert contents == (
+        "<p>We should be able to put jinja inside of our "
+        "templates and have it render totally normally!</p>"
+    )

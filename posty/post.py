@@ -22,13 +22,11 @@ class Post(Model):
     blurb: str
     body: str
     _config: Config | None
-    slug: str = ''
+    slug: str = ""
     tags: list[str] = field(default_factory=list)
 
     @classmethod
-    def from_yaml(
-        cls, file_contents: str, config: Config | None = None
-    ) -> "Post":
+    def from_yaml(cls, file_contents: str, config: Config | None = None) -> "Post":
         """
         Returns a Post from the given file_contents
         """
@@ -41,26 +39,26 @@ class Post(Model):
 
         if len(parts[1:]) == 1:
             # Post that has no blurb, just a body
-            post['blurb'] = parts[1]
-            post['body'] = parts[1]
+            post["blurb"] = parts[1]
+            post["body"] = parts[1]
         elif len(parts[1:]) == 2:
             # Post with a blurb and a separate body
-            post['blurb'] = parts[1]
-            post['body'] = "\n".join(parts[1:])
+            post["blurb"] = parts[1]
+            post["body"] = "\n".join(parts[1:])
         else:
-            raise InvalidObject('Got too many YAML documents in post')
+            raise InvalidObject("Got too many YAML documents in post")
 
-        post['blurb'] = post['blurb'].strip()
-        post['body'] = post['body'].strip()
+        post["blurb"] = post["blurb"].strip()
+        post["body"] = post["body"].strip()
 
         return cls(
-            title=post.get('title', ''),
-            slug=post.get('slug', ''),
-            date=post.get('date'),
-            tags=post.get('tags', ''),
-            blurb=post.get('blurb', ''),
-            body=post.get('body', ''),
-            _config=config
+            title=post.get("title", ""),
+            slug=post.get("slug", ""),
+            date=post.get("date"),
+            tags=post.get("tags", ""),
+            blurb=post.get("blurb", ""),
+            body=post.get("body", ""),
+            _config=config,
         )
 
     def to_yaml(self) -> str:
@@ -69,9 +67,9 @@ class Post(Model):
         reverse of ``from_yaml()``
         """
         metadata = {
-            'title': self.title,
-            'date': self.date,
-            'tags': self.tags,
+            "title": self.title,
+            "date": self.date,
+            "tags": self.tags,
         }
         body = self.body
 
@@ -82,7 +80,7 @@ class Post(Model):
             output += self.blurb.strip()
             output += "\n"
 
-            body = body.replace(self.blurb, '')
+            body = body.replace(self.blurb, "")
 
         output += "---\n"
         output += body.strip()
@@ -100,16 +98,12 @@ class Post(Model):
             self.slug = slugify(self.title)
 
     def url(self) -> Any:
-        path = '{}/{:02d}/{}/'.format(
-            self.date.year,
-            self.date.month,
-            self.slug
-        )
+        path = "{}/{:02d}/{}/".format(self.date.year, self.date.month, self.slug)
         return urljoin(self.config.base_url, path)
 
     def path_on_disk(self) -> str:
         return os.path.join(
             str(self.date.year),
-            '{:02d}'.format(self.date.month),
+            "{:02d}".format(self.date.month),
             self.slug,
         )

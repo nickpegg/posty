@@ -28,7 +28,6 @@ dev = [
     "setuptools",
     "bpython",
     "flake8",
-    "pycodestyle",
     "pytest",
     "pytest-watch",
     "Sphinx",
@@ -40,6 +39,7 @@ dev = [
     "types-markdown>=3.10.0.20251106",
     "types-pyyaml>=6.0.12.20250915",
     "types-pytz>=2025.2.0.20251108",
+    "black>=25.11.0",
 ]
 
 [build-system]

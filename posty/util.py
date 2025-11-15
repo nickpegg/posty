@@ -6,7 +6,7 @@ from slugify import slugify as awesome_slugify
 
 from typing import TypeVar, cast
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def slugify(text: str) -> str:
@@ -20,7 +20,7 @@ def slugify_posty1(text: str) -> str:
     """
     Returns a Posty 1.x compatible slugified version of ``text``
     """
-    return str(text).strip().lower().replace(' ', '_').replace('#', '_')
+    return str(text).strip().lower().replace(" ", "_").replace("#", "_")
 
 
 def bucket(_list: list[T], size: int) -> list[list[T]]:

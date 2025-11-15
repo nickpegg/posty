@@ -9,7 +9,7 @@ from ..fixtures import site  # noqa
 
 
 @pytest.fixture
-def renderer(site: Site) -> Posty1RedirectRenderer:     # noqa
+def renderer(site: Site) -> Posty1RedirectRenderer:  # noqa
     site.load()
     return Posty1RedirectRenderer(site)
 
@@ -25,6 +25,6 @@ def test_redirects_exist(renderer: Posty1RedirectRenderer) -> None:
             renderer.output_path,
             str(post.date.year),
             str(post.date.month),
-            '{}.html'.format(slugify_posty1(post.title)),
+            "{}.html".format(slugify_posty1(post.title)),
         )
         assert os.path.exists(path)

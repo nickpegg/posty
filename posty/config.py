@@ -43,35 +43,33 @@ class Config:
         Validate and clean the already-loaded config
         """
         if self.author == "":
-            raise InvalidConfig(self, 'You must set an author')
+            raise InvalidConfig(self, "You must set an author")
 
         if self.title == "":
-            raise InvalidConfig(self, 'You must set a title')
+            raise InvalidConfig(self, "You must set a title")
 
-        if not self.base_url.endswith('/'):
-            raise InvalidConfig(self, 'base_url must end with /')
+        if not self.base_url.endswith("/"):
+            raise InvalidConfig(self, "base_url must end with /")
 
     @classmethod
-    def from_yaml(cls, path: str = 'config.yml') -> "Config":
+    def from_yaml(cls, path: str = "config.yml") -> "Config":
         if not os.path.exists(path):
-            raise ValueError(
-                'Unable to read config at {}'.format(path)
-            )
+            raise ValueError("Unable to read config at {}".format(path))
 
         with open(path) as f:
             payload = yaml.safe_load(f)
 
-        payload['config_path'] = path
+        payload["config_path"] = path
 
         feed_conf = None
-        if 'feeds' in payload:
-            feed_conf = FeedConfig(**payload['feeds'])
-            del payload['feeds']
+        if "feeds" in payload:
+            feed_conf = FeedConfig(**payload["feeds"])
+            del payload["feeds"]
 
         compat_conf = None
-        if 'compat' in payload:
-            compat_conf = CompatConfig(**payload['compat'])
-            del payload['compat']
+        if "compat" in payload:
+            compat_conf = CompatConfig(**payload["compat"])
+            del payload["compat"]
 
         new_config = cls(**payload)
 

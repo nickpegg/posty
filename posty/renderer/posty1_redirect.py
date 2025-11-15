@@ -15,23 +15,20 @@ class Posty1RedirectRenderer(Renderer):
     Posty2 URLs are in the form of:
     /:year/:month/:slug/index.html
     """
+
     def render_site(self) -> None:
-        template_path = os.path.join(self.site.site_path,
-                                     'templates/redirect.html')
+        template_path = os.path.join(self.site.site_path, "templates/redirect.html")
         template = jinja2.Template(open(template_path).read())
 
         for post in self.site.posts:
             old_dir = os.path.join(
-                self.output_path,
-                str(post.date.year),
-                str(post.date.month)
+                self.output_path, str(post.date.year), str(post.date.month)
             )
             if not os.path.exists(old_dir):
                 os.makedirs(old_dir)
 
             old_slug = slugify_posty1(post.title)
-            redirect_filename = os.path.join(old_dir,
-                                             '{}.html'.format(old_slug))
+            redirect_filename = os.path.join(old_dir, "{}.html".format(old_slug))
 
-            with open(redirect_filename, 'w') as redirect:
+            with open(redirect_filename, "w") as redirect:
                 redirect.write(template.render(url=post.url()))
