@@ -16,7 +16,11 @@ doc:
 test:
 	uv run pycodestyle posty tests
 	uv run flake8 posty tests
+	uv run mypy posty tests
 	uv run pytest
+
+test-watch:
+	find . -name '*py' -or -name 'uv.lock' | entr -r -c make test
 
 # Release-related actions
 dist:

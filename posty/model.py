@@ -1,20 +1,14 @@
 import abc
-import sys
+from typing import Any
 
 from .config import Config
-
-
-if sys.version_info >= (3, 3):
-    from collections.abc import MutableMapping
-else:
-    from collections import MutableMapping
 
 
 class ABC(metaclass=abc.ABCMeta):
     pass
 
 
-class Model(ABC, MutableMapping):
+class Model(ABC):
     """
     Base class for objects representing things stored as YAML, such as a Post
     or a Page
@@ -25,48 +19,30 @@ class Model(ABC, MutableMapping):
     :param config:
         A Config object
     """
-    def __init__(self, payload, config=None):
-        self.payload = payload
 
-        if config is None:
-            self.config = Config().load()
-        else:
-            self.config = config
+    _config: Config | None
 
+    def __post_init__(self) -> None:
         self.validate()
+
+    @property
+    def config(self) -> Config:
+        if self._config is None:
+            self._config = Config.from_yaml()
+        return self._config
 
     @classmethod
     @abc.abstractmethod
-    def from_yaml(cls, file_contents, config=None):
+    def from_yaml(
+        cls, file_contents: str, config: Config | None = None
+    ) -> "Model":
         """
         Load an object from its YAML file representation
         """
         raise NotImplementedError
 
-    def __len__(self):
-        return len(self.payload)
-
-    def __iter__(self):
-        return iter(self.payload)
-
-    def __getitem__(self, key):
-        return self.payload[key]
-
-    def __setitem__(self, key, value):
-        self.payload[key] = value
-
-    def __delitem__(self, key):
-        del self.payload[key]
-
-    def as_dict(self):
-        """
-        Return a true dict representation of this object, suitable for
-        serialization into JSON or YAML
-        """
-        return self.payload
-
     @abc.abstractmethod
-    def validate(self):
+    def validate(self) -> None:
         """
         This should be implemented by the child class to verify that all fields
         that are expected exist on the payload, and set any that aren't
@@ -74,14 +50,14 @@ class Model(ABC, MutableMapping):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def url(self):
+    def url(self) -> Any:
         """
         Returns the URL path to this resource
         """
         raise NotImplementedError
 
     @abc.abstractmethod
-    def path_on_disk(self):
+    def path_on_disk(self) -> str:
         """
         Returns the relative path on disk to the object, for rendering purposes
         """

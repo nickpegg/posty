@@ -2,17 +2,18 @@ import os
 import pytest
 
 from posty.renderer import HtmlRenderer
+from posty.site import Site
 
 from ..fixtures import site  # noqa
 
 
 @pytest.fixture
-def renderer(site):     # noqa
+def renderer(site: Site) -> HtmlRenderer:     # noqa
     site.load()
     return HtmlRenderer(site)
 
 
-def test_it_at_least_doesnt_crash(renderer):
+def test_it_at_least_doesnt_crash(renderer: HtmlRenderer) -> None:
     # Renders like this are annoying to test. Maybe we can verify what data
     # is getting passed to the jinja templates, but meh.
     #
@@ -20,7 +21,7 @@ def test_it_at_least_doesnt_crash(renderer):
     renderer.render_site()
 
 
-def test_jinja_in_markdown(renderer):
+def test_jinja_in_markdown(renderer: HtmlRenderer) -> None:
     """
     If we have jinja inside of our markdown, make sure it gets rendered as
     expected! This allows folks to use Jinja filters inside markdown!

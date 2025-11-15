@@ -1,6 +1,11 @@
 import jinja2
 from markdown import markdown as md
 from urllib.parse import urljoin
+from typing import Callable, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from posty.site import Site
+
 
 # Jinja2 template filters
 
@@ -10,7 +15,7 @@ from urllib.parse import urljoin
 # dict
 
 
-def markdown_func(site):
+def markdown_func(site: "Site") -> Callable[[str], str]:
     """
     Returns a filter function which will return the rendered version of the
     given Markdown text.
@@ -19,7 +24,8 @@ def markdown_func(site):
     allows the use of the other filters found here, like ``media_url`` and
     ``absolute_url``. Then, the result of that is rendered as markdown.
     """
-    def markdown(text):
+
+    def markdown(text: str) -> str:
         jinja_env = jinja2.Environment()
         jinja_env.filters['media_url'] = media_url_func(site)
         jinja_env.filters['absolute_url'] = absolute_url_func(site)
@@ -35,7 +41,7 @@ def markdown_func(site):
     return markdown
 
 
-def media_url_func(site):
+def media_url_func(site: "Site") -> Callable[[str], str]:
     """
     Returns a filter function that returns a full media URL for the given file,
     scoped to the given Site object.
@@ -43,19 +49,19 @@ def media_url_func(site):
     For example, if the Site has its base_url set to '/foo/' then:
     img/my_picture.jpg -> /foo/media/img/my_picture.jpg
     """
-    def media_url(path):
-        base_path = urljoin(site.config['base_url'], 'media/')
+    def media_url(path: str) -> Any:
+        base_path = urljoin(site.config.base_url, 'media/')
         return urljoin(base_path, path)
 
     return media_url
 
 
-def absolute_url_func(site):
+def absolute_url_func(site: "Site") -> Callable[[str], str]:
     """
     Returns a markdown filter function that returns an absolute URL for the
     given relative URL, simply concatenating config['base_url'] with the URL.
     """
-    def absolute_url(path):
-        return urljoin(site.config['base_url'], path)
+    def absolute_url(path: str) -> Any:
+        return urljoin(site.config.base_url, path)
 
     return absolute_url

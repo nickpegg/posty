@@ -6,45 +6,40 @@ from posty.exceptions import InvalidConfig
 
 
 @pytest.fixture
-def config():
+def config() -> Config:
     path = os.path.join(os.path.dirname(__file__), 'fixtures/site/config.yml')
-    c = Config(path).load()
+    c = Config.from_yaml(path)
     return c
 
 
-def test_config_at_least_loads(config):
+def test_config_at_least_loads(config: Config) -> None:
     """
     Make sure the config can load with our skeleton config and it looks
     somewhat correct when we access it like a Mapping
     """
-    assert config['title'] == 'Test website'
-    assert config['num_top_tags'] == 5
-    assert config['compat']['redirect_posty1_urls'] is True
+    assert config.title == 'Test website'
+    assert config.num_top_tags == 5
+    assert config.compat.redirect_posty1_urls is True
 
 
 class TestCleanConfig(object):
-    def test_no_title(self, config):
-        del config['title']
+    def test_no_title(self, config: Config) -> None:
+        config.title = ""
         with pytest.raises(InvalidConfig):
-            config.clean_config()
+            config.__post_init__()
 
-    def test_no_description(self, config):
-        del config['description']
-        config.clean_config()   # shouldn't raise an exception
-        assert config['description'] == ''
-
-    def test_no_compat(self, config):
-        del config['compat']
-        config.clean_config()
-        assert config['compat']['redirect_posty1_urls'] is False
-
-    def test_no_base_url(self, config):
-        del config['base_url']
-        config.clean_config()
-        assert config['base_url'] == '/'
-
-    def test_no_author(self, config):
-        del config['author']
-
+    def test_no_author(self, config: Config) -> None:
+        config.author = ''
         with pytest.raises(InvalidConfig):
-            config.clean_config()
+            config.__post_init__()
+
+    def test_defaults(self) -> None:
+        config = Config(
+            config_path="/does/not/exist",
+            title="Test title",
+            author="Test author",
+        )
+
+        assert config.description == ''
+        assert config.compat.redirect_posty1_urls is False
+        assert config.base_url == '/'

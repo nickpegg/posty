@@ -4,22 +4,26 @@ Various utility functions
 
 from slugify import slugify as awesome_slugify
 
+from typing import TypeVar, cast
 
-def slugify(text):
+T = TypeVar('T')
+
+
+def slugify(text: str) -> str:
     """
     Returns a slugified version of the given ``text``
     """
-    return awesome_slugify(text, to_lower=True)
+    return cast(str, awesome_slugify(text, to_lower=True))
 
 
-def slugify_posty1(text):
+def slugify_posty1(text: str) -> str:
     """
     Returns a Posty 1.x compatible slugified version of ``text``
     """
     return str(text).strip().lower().replace(' ', '_').replace('#', '_')
 
 
-def bucket(_list, size):
+def bucket(_list: list[T], size: int) -> list[list[T]]:
     """
     Bucket the list ``_list`` into chunks of up to size ``size``
 

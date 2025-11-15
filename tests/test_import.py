@@ -3,19 +3,22 @@ import pytest
 
 from .fixtures import posty1_site_path, empty_posty_site    # noqa
 from posty.importers import Posty1Importer
+from posty.site import Site
 
 
 class TestPosty1Importer(object):
     @pytest.fixture
-    def importer(self, posty1_site_path, empty_posty_site):     # noqa
+    def importer(self, posty1_site_path: str, empty_posty_site: Site) -> Posty1Importer:     # noqa
         return Posty1Importer(empty_posty_site, posty1_site_path)
 
     @pytest.fixture
-    def importer_with_directories(self, importer):
+    def importer_with_directories(
+        self, importer: Posty1Importer
+    ) -> Posty1Importer:
         importer.ensure_directories()
         return importer
 
-    def test_ensure_directories(self, importer):
+    def test_ensure_directories(self, importer: Posty1Importer) -> None:
         importer.ensure_directories()
 
         dirs = ('posts', 'pages', 'media', 'templates')
@@ -23,7 +26,9 @@ class TestPosty1Importer(object):
             path = os.path.join(importer.site.site_path, _dir)
             assert os.path.isdir(path)
 
-    def test_import_media(self, importer_with_directories):
+    def test_import_media(
+        self, importer_with_directories: Posty1Importer
+    ) -> None:
         """
         All media should be copied verbatim
         """
@@ -37,7 +42,9 @@ class TestPosty1Importer(object):
             dst_file = open(os.path.join(dst_path, f)).read()
             assert src_file == dst_file
 
-    def test_import_templates(self, importer_with_directories):
+    def test_import_templates(
+        self, importer_with_directories: Posty1Importer
+    ) -> None:
         """
         all templates should be copied verbatim
         """
@@ -51,20 +58,23 @@ class TestPosty1Importer(object):
             dst_file = open(os.path.join(dst_path, f)).read()
             assert src_file == dst_file
 
-    def test_import_pages(self, importer_with_directories):
+    def test_import_pages(
+        self, importer_with_directories: Posty1Importer
+    ) -> None:
         """
         all pages should be copies verbatim
         """
         importer = importer_with_directories
         importer.import_pages()
 
-        # Ensure `url` is not set on any pages
         site = importer.site
         site._load_pages()
-        for page in site.payload['pages']:
-            assert page.get('url') is None
+        for page in site.pages:
+            assert page.title != ""
 
-    def test_import_posts(self, importer_with_directories):
+    def test_import_posts(
+        self, importer_with_directories: Posty1Importer
+    ) -> None:
         """
         all posts should be copied over with blurbs created from their first
         paragraphs
@@ -76,20 +86,23 @@ class TestPosty1Importer(object):
         site._load_posts()
 
         num_posts = len(os.listdir(os.path.join(importer.src_path, '_posts')))
-        assert num_posts == len(site.payload['posts'])
+        assert num_posts == len(site.posts)
 
         post = site.post('single-paragraph-post')
-        assert post['title'] == 'Single paragraph post'
-        assert post['blurb'] == post['body']
-        assert post['body'] == ('This is a post that just has a single '
-                                'paragraph')
+        assert post.title == 'Single paragraph post'
+        assert post.blurb == post.body
+        assert post.body == (
+            'This is a post that just has a single paragraph'
+        )
 
         post = site.post('multi-paragraph-post')
-        assert post['title'] == 'Multi-paragraph Post'
-        assert post['blurb'] == ('This is a post that has multiple paragraphs,'
-                                 ' where the first paragraph should get '
-                                 'converted into a blurb.')
-        assert post['body'] == """
+        assert post.title == 'Multi-paragraph Post'
+        assert post.blurb == (
+            'This is a post that has multiple paragraphs,'
+            ' where the first paragraph should get '
+            'converted into a blurb.'
+        )
+        assert post.body == """
 This is a post that has multiple paragraphs, where the first paragraph should get converted into a blurb.
 
 This is the second paragraph, which should be hidden from the blurb.
@@ -97,5 +110,5 @@ This is the second paragraph, which should be hidden from the blurb.
 And a third paragraph, also outside the blurb.
         """.strip()     # noqa
 
-    def test_it_at_least_runs(self, importer):
+    def test_it_at_least_runs(self, importer: Posty1Importer) -> None:
         importer.run()
