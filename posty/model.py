@@ -35,7 +35,7 @@ class Model(ABC):
     @abc.abstractmethod
     def from_yaml(
         cls, file_contents: str, config: Config | None = None
-    ) -> Model:
+    ) -> "Model":
         """
         Load an object from its YAML file representation
         """

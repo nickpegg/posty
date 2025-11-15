@@ -27,7 +27,7 @@ class Page(Model):
     @classmethod
     def from_yaml(
         cls, file_contents: str, config: Config | None = None
-    ) -> Page:
+    ) -> "Page":
         """
         Return a Page from the given file_contents
         """

@@ -28,7 +28,7 @@ class Post(Model):
     @classmethod
     def from_yaml(
         cls, file_contents: str, config: Config | None = None
-    ) -> Post:
+    ) -> "Post":
         """
         Returns a Post from the given file_contents
         """

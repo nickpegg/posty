@@ -20,7 +20,7 @@ def posty1_site_path() -> str:
 
 
 @pytest.fixture
-def empty_posty_site() -> Generator[Site]:
+def empty_posty_site() -> Generator[Site, None, None]:
     path = tempfile.mkdtemp(suffix='posty-test')
     cfg = Config(
         config_path=os.path.join(path, "config.yml"),
@@ -33,7 +33,7 @@ def empty_posty_site() -> Generator[Site]:
 
 
 @pytest.fixture
-def site() -> Generator[Site]:
+def site() -> Generator[Site, None, None]:
     fixture_path = os.path.join(os.path.dirname(__file__), 'site')
 
     path = os.path.join(tempfile.mkdtemp(suffix='posty-test'), 'site')

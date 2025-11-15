@@ -31,7 +31,7 @@ class HtmlRenderer(Renderer):
     """
     Renderer that outputs HTML files
     """
-    def __init__(self, site: Site, output_path: str = 'build') -> None:
+    def __init__(self, site: "Site", output_path: str = 'build') -> None:
         """
         :param site:
             a Site object to build

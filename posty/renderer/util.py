@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 # dict
 
 
-def markdown_func(site: Site) -> Callable[[str], str]:
+def markdown_func(site: "Site") -> Callable[[str], str]:
     """
     Returns a filter function which will return the rendered version of the
     given Markdown text.
@@ -41,7 +41,7 @@ def markdown_func(site: Site) -> Callable[[str], str]:
     return markdown
 
 
-def media_url_func(site: Site) -> Callable[[str], str]:
+def media_url_func(site: "Site") -> Callable[[str], str]:
     """
     Returns a filter function that returns a full media URL for the given file,
     scoped to the given Site object.
@@ -56,7 +56,7 @@ def media_url_func(site: Site) -> Callable[[str], str]:
     return media_url
 
 
-def absolute_url_func(site: Site) -> Callable[[str], str]:
+def absolute_url_func(site: "Site") -> Callable[[str], str]:
     """
     Returns a markdown filter function that returns an absolute URL for the
     given relative URL, simply concatenating config['base_url'] with the URL.

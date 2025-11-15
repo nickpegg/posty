@@ -52,7 +52,7 @@ class Config:
             raise InvalidConfig(self, 'base_url must end with /')
 
     @classmethod
-    def from_yaml(cls, path: str = 'config.yml') -> Config:
+    def from_yaml(cls, path: str = 'config.yml') -> "Config":
         if not os.path.exists(path):
             raise ValueError(
                 'Unable to read config at {}'.format(path)
