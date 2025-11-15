@@ -1,33 +1,52 @@
-[tool.poetry]
+[project]
 name = "posty"
 version = "2.1.0"
 description = "A static site generator"
-authors = ["Nick Pegg <nick@nickpegg.com>"]
+authors = [{ name = "Nick Pegg", email = "nick@nickpegg.com" }]
+requires-python = ">=3.10"
 license = "MIT"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-awesome-slugify = "^1.6.5"
-click = ">=7,<9"
-feedgen = ">=0.9,<1.1"
-Jinja2 = "^3.1"
-Markdown = "^3.3"
-pytz = "*"
-PyYAML = "^6.0"
+dependencies = [
+    "awesome-slugify~=1.6",
+    "click>=7,<9",
+    "feedgen>=0.9,<1.1",
+    "Jinja2~=3.1",
+    "Markdown~=3.3",
+    "pytz",
+    "PyYAML",
+]
 
-[tool.poetry.group.dev.dependencies]
-setuptools = "*"
-bpython = "*"
-flake8 = "*"
-pycodestyle = "*"
-pytest = "*"
-pytest-watch = "*"
-Sphinx = "*"
-sphinx-rtd-theme = "*"
-sphinx-click = "*"
-twine = "*"
-wheel = "*"
+[project.urls]
+source = "https://github.com/nickpegg/posty"
+documentation = "https://posty.readthedocs.io"
+
+[project.scripts]
+posty = "posty.cli:cli"
+
+[dependency-groups]
+dev = [
+    "setuptools",
+    "bpython",
+    "flake8",
+    "pycodestyle",
+    "pytest",
+    "pytest-watch",
+    "Sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-click",
+    "twine",
+    "wheel",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+only-packages = true
+artifacts = ['posty/skel']
+exclude = ['tests']
+
+[tool.hatch.build.targets.sdist]
+only-packages = true
+artifacts = ['posty/skel']
