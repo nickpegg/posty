@@ -38,7 +38,7 @@ jobs:
         enable-cache: true
 
     - name: Install deps
-      run: make develop
+      run: uv sync --locked --dev
 
     - name: Run tests
       run: make test
