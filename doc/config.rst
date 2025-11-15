@@ -54,7 +54,11 @@ These config variables are all accessible in the templates via
 * ``num_top_tags`` - The number of tags to include in the 'top tags' list
 * ``num_posts_per_page`` - When generating HTML files containing posts from the
   entire list of posts, Posty will break them up into files containing this
-  number of posts
+  number of posts.
+
+  * If you set this to ``-1``, then it will display all posts on the first page. This is
+    useful if you want your index page to just be a list of links to posts.
+
 * ``feeds.rss`` - Set to ``true`` to generate an RSS feed XML file
 * ``feeds.atom`` - Set to ``true`` to generate an Atom feed XML file
 

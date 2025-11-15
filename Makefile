@@ -18,7 +18,7 @@ test:
 	# Line length of 90 to work with Black formatting
 	uv run flake8 --max-line-length=90 posty tests
 	uv run mypy posty tests
-	uv run pytest
+	uv run pytest --log-level=INFO
 
 test-watch:
 	find . -name '*py' -or -name 'uv.lock' | entr -r -c make test
