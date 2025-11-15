@@ -36,6 +36,10 @@ dev = [
     "sphinx-click",
     "twine",
     "wheel",
+    "mypy>=1.18.2",
+    "types-markdown>=3.10.0.20251106",
+    "types-pyyaml>=6.0.12.20250915",
+    "types-pytz>=2025.2.0.20251108",
 ]
 
 [build-system]
@@ -50,3 +54,11 @@ exclude = ['tests']
 [tool.hatch.build.targets.sdist]
 only-packages = true
 artifacts = ['posty/skel']
+
+[tool.mypy]
+# strict = true
+
+[[tool.mypy.overrides]]
+# Tell mypy to try its darndest to analyze these untyped imports
+module = ["slugify.*", "feedgen.*"]
+follow_untyped_imports = true

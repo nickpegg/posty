@@ -16,6 +16,7 @@ doc:
 test:
 	uv run pycodestyle posty tests
 	uv run flake8 posty tests
+	uv run mypy posty tests
 	uv run pytest
 
 # Release-related actions
