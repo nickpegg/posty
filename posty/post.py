@@ -1,18 +1,34 @@
+import datetime
 import os.path
-from urllib.parse import urljoin
 import yaml
+from dataclasses import dataclass, field
+from urllib.parse import urljoin
+from typing import Any
 
+from .config import Config
 from .exceptions import InvalidObject
 from .model import Model
 from .util import slugify
 
 
+@dataclass
 class Post(Model):
     """
     Representation of a post
     """
+
+    title: str
+    date: datetime.date
+    blurb: str
+    body: str
+    _config: Config | None
+    slug: str = ''
+    tags: list[str] = field(default_factory=list)
+
     @classmethod
-    def from_yaml(cls, file_contents, config=None):
+    def from_yaml(
+        cls, file_contents: str, config: Config | None = None
+    ) -> Post:
         """
         Returns a Post from the given file_contents
         """
@@ -37,56 +53,63 @@ class Post(Model):
         post['blurb'] = post['blurb'].strip()
         post['body'] = post['body'].strip()
 
-        return cls(post, config=config)
+        return cls(
+            title=post.get('title', ''),
+            slug=post.get('slug', ''),
+            date=post.get('date'),
+            tags=post.get('tags', ''),
+            blurb=post.get('blurb', ''),
+            body=post.get('body', ''),
+            _config=config
+        )
 
-    def to_yaml(self):
+    def to_yaml(self) -> str:
         """
         Returns the YAML and text representation of this Post. This is the
         reverse of ``from_yaml()``
         """
         metadata = {
-            'title': self['title'],
-            'date': self['date'],
-            'tags': self['tags'],
+            'title': self.title,
+            'date': self.date,
+            'tags': self.tags,
         }
-        body = self['body']
+        body = self.body
 
         output = yaml.dump(metadata, default_flow_style=False)
 
-        if self['blurb'] != self['body']:
+        if self.blurb != self.body:
             output += "---\n"
-            output += self['blurb'].strip()
+            output += self.blurb.strip()
             output += "\n"
 
-            body = body.replace(self['blurb'], '')
+            body = body.replace(self.blurb, '')
 
         output += "---\n"
         output += body.strip()
 
         return output
 
-    def validate(self):
-        required_fields = ('title', 'date', 'blurb', 'body')
-        for field in required_fields:
-            if field not in self.payload.keys():
-                raise InvalidObject(
-                    'Post is missing a {} field in the metadata'.format(field)
-                )
+    def validate(self) -> None:
+        if self.title == "":
+            raise InvalidObject("Must have a title")
 
-        self.payload.setdefault('tags', [])
-        self.payload.setdefault('slug', slugify(self.payload['title']))
+        if self.body == "":
+            raise InvalidObject("Must have a body")
 
-    def url(self):
+        if self.slug == "":
+            self.slug = slugify(self.title)
+
+    def url(self) -> Any:
         path = '{}/{:02d}/{}/'.format(
-            self.payload['date'].year,
-            self.payload['date'].month,
-            self.payload['slug']
+            self.date.year,
+            self.date.month,
+            self.slug
         )
-        return urljoin(self.config['base_url'], path)
+        return urljoin(self.config.base_url, path)
 
-    def path_on_disk(self):
+    def path_on_disk(self) -> str:
         return os.path.join(
-            str(self.payload['date'].year),
-            '{:02d}'.format(self.payload['date'].month),
-            self.payload['slug'],
+            str(self.date.year),
+            '{:02d}'.format(self.date.month),
+            self.slug,
         )

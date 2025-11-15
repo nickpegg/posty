@@ -3,17 +3,18 @@ import os
 import pytest
 
 from posty.renderer import JsonRenderer
+from posty.site import Site
 
 from ..fixtures import site   # noqa
 
 
 @pytest.fixture
-def renderer(site):     # noqa
+def renderer(site: Site) -> JsonRenderer:     # noqa
     site.load()
     return JsonRenderer(site)
 
 
-def test_render_site(renderer):     # noqa
+def test_render_site(renderer: JsonRenderer) -> None:     # noqa
     """
     Verify that Site.render() spits out a valid JSON file
     """

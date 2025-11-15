@@ -10,6 +10,7 @@ import yaml
 
 from .exceptions import UnableToImport
 from .model import ABC
+from .site import Site
 
 
 class Importer(ABC):
@@ -22,15 +23,15 @@ class Importer(ABC):
     :param src_path:
         Path to the thing to import
     """
-    def __init__(self, site, src_path):
+    def __init__(self, site: Site, src_path: str) -> None:
         self.site = site
         self.src_path = src_path
 
     @abc.abstractmethod
-    def run(self):
+    def run(self) -> None:
         raise NotImplementedError
 
-    def ensure_directories(self):
+    def ensure_directories(self) -> None:
         for _dir in ('media', 'templates', 'pages', 'posts'):
             path = os.path.join(self.site.site_path, _dir)
             if not os.path.exists(path):
@@ -45,7 +46,7 @@ class Posty1Importer(Importer):
     """
     Importer to pull from a Posty 1.x site
     """
-    def run(self):
+    def run(self) -> None:
         self.ensure_directories()
 
         self.import_media()
@@ -53,13 +54,13 @@ class Posty1Importer(Importer):
         self.import_pages()
         self.import_posts()
 
-    def import_media(self):
+    def import_media(self) -> None:
         self._copy_files('_media', 'media')
 
-    def import_templates(self):
+    def import_templates(self) -> None:
         self._copy_files('_templates', 'templates')
 
-    def import_pages(self):
+    def import_pages(self) -> None:
         src_dir = os.path.join(self.src_path, '_pages')
         dst_dir = os.path.join(self.site.site_path, 'pages')
 
@@ -71,7 +72,7 @@ class Posty1Importer(Importer):
             with open(dst_file, 'w') as fh:
                 fh.write(new_page)
 
-    def import_posts(self):
+    def import_posts(self) -> None:
         src_dir = os.path.join(self.src_path, '_posts')
         dst_dir = os.path.join(self.site.site_path, 'posts')
 
@@ -83,7 +84,7 @@ class Posty1Importer(Importer):
             with open(dst_file, 'w') as fh:
                 fh.write(new_post)
 
-    def _copy_files(self, src, dst):
+    def _copy_files(self, src: str, dst: str) -> None:
         """
         Copy all the files in ``src_dir`` into ``dst_dir``. Each given dir
         should be relative to the source/destination sites
@@ -109,7 +110,7 @@ class Posty1Importer(Importer):
                 print(("  Looks like {} isn't a file nor dir, "
                        "not copying.").format(src_path))
 
-    def _convert_page(self, old_page):
+    def _convert_page(self, old_page: str) -> str:
         """
         Converts an old Posty 1.x page into a new-style one. Notably just
         throws away any existing `url`
@@ -128,7 +129,7 @@ class Posty1Importer(Importer):
 
         return new_page
 
-    def _convert_post(self, old_post):
+    def _convert_post(self, old_post: str) -> str:
         """
         Converts an old Posty post (a string) into a new-style post with a
         blurb and updated metadata. Returns a string containing the three YAML

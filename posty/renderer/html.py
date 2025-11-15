@@ -2,10 +2,19 @@ from collections import defaultdict
 import jinja2
 import os
 from urllib.parse import urljoin
+from typing import Any, TYPE_CHECKING
 
-from .. import util
-from .base import Renderer
-from .util import markdown_func, media_url_func, absolute_url_func
+from posty import util
+from posty.page import Page
+from posty.post import Post
+from posty.renderer.base import Renderer
+from posty.renderer.util import (
+    markdown_func, media_url_func, absolute_url_func
+)
+
+if TYPE_CHECKING:
+    from posty.site import Site
+
 
 # Route reference
 # /               Posts
@@ -22,7 +31,7 @@ class HtmlRenderer(Renderer):
     """
     Renderer that outputs HTML files
     """
-    def __init__(self, site, output_path='build'):
+    def __init__(self, site: Site, output_path: str = 'build') -> None:
         """
         :param site:
             a Site object to build
@@ -42,26 +51,36 @@ class HtmlRenderer(Renderer):
         filters['media_url'] = media_url_func(self.site)
         filters['absolute_url'] = absolute_url_func(self.site)
 
-    def _render_file(self, path, template, **kwargs):
+    def _render_file(
+        self,
+        path: str,
+        template: jinja2.Template,
+        **kwargs: Any,
+    ) -> None:
         with open(path, 'w') as f:
             f.write(template.render(**kwargs))
 
-    def render_site(self):
+    def render_site(self) -> None:
         """
         Given a Site object, render all of its components
 
         :param site: a loaded Site object
         """
-        for post in self.site.payload['posts']:
+        for post in self.site.posts:
             self.render_post(post)
 
-        for page in self.site.payload['pages']:
+        for page in self.site.pages:
             self.render_page(page)
 
         self.render_site_posts()
         self.render_site_tags()
 
-    def render_posts(self, posts, prefix='', template_name='posts.html'):
+    def render_posts(
+        self,
+        posts: list[Post],
+        prefix: str = '',
+        template_name: str = 'posts.html',
+    ) -> None:
         """
         Render a list of posts as sets of pages where each page has
         ``num_posts_per_page`` posts. Each page of posts will be rendered to
@@ -75,9 +94,9 @@ class HtmlRenderer(Renderer):
             prefix += '/'
 
         template = self.jinja_env.get_template(template_name)
-        groups = util.bucket(posts, self.site.config['num_posts_per_page'])
+        groups = util.bucket(posts, self.site.config.num_posts_per_page)
 
-        base_page_url = self.site.config['base_url']
+        base_page_url = self.site.config.base_url
         if prefix:
             base_page_url = urljoin(base_page_url, prefix)
         base_page_url = urljoin(base_page_url, 'page/')
@@ -92,7 +111,7 @@ class HtmlRenderer(Renderer):
         next_page_url = None
         if len(groups) > 0:
             next_page_url = urljoin(base_page_url, str(2) + '/')
-        self._render_file(dst_file, template, site=self.site.payload,
+        self._render_file(dst_file, template, site=self.site,
                           posts=posts, next_page_url=next_page_url)
 
         # Render the rest
@@ -105,7 +124,7 @@ class HtmlRenderer(Renderer):
             dst_file = os.path.join(dst_path, 'index.html')
 
             if page == 2:
-                prev_page_url = urljoin(self.site.config['base_url'], prefix)
+                prev_page_url = urljoin(self.site.config.base_url, prefix)
             else:
                 prev_page_url = urljoin(base_page_url, str(page - 1) + '/')
             next_page_url = None
@@ -115,20 +134,20 @@ class HtmlRenderer(Renderer):
             self._render_file(
                 dst_file,
                 template,
-                site=self.site.payload,
+                site=self.site,
                 posts=posts,
                 prev_page_url=prev_page_url,
                 next_page_url=next_page_url
             )
 
-    def render_site_posts(self):
+    def render_site_posts(self) -> None:
         """
         Renders all of the multi-post pages, N per page
         """
         self.ensure_output_path()
-        self.render_posts(self.site.payload['posts'])
+        self.render_posts(self.site.posts)
 
-    def render_site_tags(self, template_name='posts.html'):
+    def render_site_tags(self, template_name: str = 'posts.html') -> None:
         """
         Renders all of the per-tag multi-post pages, N per page
         """
@@ -136,8 +155,8 @@ class HtmlRenderer(Renderer):
 
         # Bucket all posts by tag
         tag_buckets = defaultdict(list)
-        for post in self.site.payload['posts']:
-            for tag in post['tags']:
+        for post in self.site.posts:
+            for tag in post.tags:
                 tag_buckets[tag].append(post)
 
         # For each tag, render pages of posts
@@ -145,7 +164,9 @@ class HtmlRenderer(Renderer):
             self.render_posts(posts, prefix='tag/{}/'.format(tag),
                               template_name=template_name)
 
-    def render_page(self, page, template_name='page.html'):
+    def render_page(
+        self, page: Page, template_name: str = 'page.html'
+    ) -> None:
         """
         :param page: a Page object
         """
@@ -158,10 +179,12 @@ class HtmlRenderer(Renderer):
             os.makedirs(dst_dir)
         template = self.jinja_env.get_template(template_name)
 
-        self._render_file(dst_file, template, site=self.site.payload,
+        self._render_file(dst_file, template, site=self.site,
                           page=page)
 
-    def render_post(self, post, template_name='post.html'):
+    def render_post(
+        self, post: Post, template_name: str = 'post.html'
+    ) -> None:
         """
         :param post: a Post object
         """
@@ -174,5 +197,5 @@ class HtmlRenderer(Renderer):
             os.makedirs(dst_dir)
         template = self.jinja_env.get_template(template_name)
 
-        self._render_file(dst_file, template, site=self.site.payload,
+        self._render_file(dst_file, template, site=self.site,
                           post=post)

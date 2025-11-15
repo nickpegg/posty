@@ -7,12 +7,12 @@ from .importers import Posty1Importer
 
 
 @click.group()
-def cli():
+def cli() -> None:
     pass
 
 
 @cli.command()
-def init():
+def init() -> None:
     """
     Initialize a Posty site
     """
@@ -45,7 +45,7 @@ liking, like setting the site title and such.
     type=click.Path(exists=True),
     help='Path to your config file',
 )
-def build(output, config):
+def build(output: str, config: str) -> None:
     """
     Build a Posty site as rendered HTML
     """
@@ -58,7 +58,7 @@ def build(output, config):
 
 
 @cli.group(name='new')
-def _new():
+def _new() -> None:
     """
     Create a new post or page
     """
@@ -71,7 +71,7 @@ def _new():
     help='Name of the new page',
     default='New Page',
 )
-def page(name):
+def page(name: str) -> None:
     """
     Create a new page from the template
     """
@@ -85,7 +85,7 @@ def page(name):
     help='Name of the new post',
     default='New Post',
 )
-def post(name):
+def post(name: str) -> None:
     """
     Create a new page from the template
     """
@@ -94,7 +94,7 @@ def post(name):
 
 
 @cli.group(name='import')
-def _import():
+def _import() -> None:
     """
     Import a site from another static site generator
     """
@@ -103,7 +103,7 @@ def _import():
 
 @_import.command()
 @click.argument('path')
-def posty1(path):
+def posty1(path: str) -> None:
     """
     Import a Posty 1.x site from PATH
     """

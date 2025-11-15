@@ -56,9 +56,9 @@ only-packages = true
 artifacts = ['posty/skel']
 
 [tool.mypy]
-# strict = true
+strict = true
 
 [[tool.mypy.overrides]]
-# Tell mypy to try its darndest to analyze these untyped imports
+# Imports which don't have typing
 module = ["slugify.*", "feedgen.*"]
-follow_untyped_imports = true
+ignore_missing_imports = true

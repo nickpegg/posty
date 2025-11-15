@@ -19,6 +19,9 @@ test:
 	uv run mypy posty tests
 	uv run pytest
 
+test-watch:
+	find . -name '*py' -or -name 'uv.lock' | entr -r -c make test
+
 # Release-related actions
 dist:
 	uv build

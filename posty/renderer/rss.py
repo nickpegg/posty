@@ -1,5 +1,6 @@
 import os
 from urllib.parse import urljoin
+from typing import Any
 
 from .feed import FeedRenderer
 
@@ -10,13 +11,13 @@ class RssRenderer(FeedRenderer):
     """
     filename = 'rss.xml'
 
-    def url(self):
+    def url(self) -> Any:
         """
         Return the URL to this feed file
         """
-        return urljoin(self.site.config['base_url'], self.filename)
+        return urljoin(self.site.config.base_url, self.filename)
 
-    def output(self):
+    def output(self) -> None:
         """
         Output the RSS feed file
         """

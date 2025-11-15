@@ -1,7 +1,7 @@
 from posty import util
 
 
-def test_slugify_posty1():
+def test_slugify_posty1() -> None:
     cases = (
         (
             'North Bay Area Bike Tour Log',
@@ -17,7 +17,7 @@ def test_slugify_posty1():
         assert util.slugify_posty1(i) == o
 
 
-def test_bucket():
+def test_bucket() -> None:
     x = list(range(1, 6))
 
     result = util.bucket(x, 2)
