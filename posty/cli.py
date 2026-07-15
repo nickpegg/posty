@@ -20,8 +20,7 @@ def init() -> None:
     site.init()
 
     click.echo("Posty initialized!")
-    click.echo(
-        """
+    click.echo("""
 Directories:
 - posts -> Put all of your blog posts here
 - pages -> Put all of your static pages here
@@ -30,8 +29,7 @@ Directories:
 
 There is also a config file at config.yml that you should adjust to your
 liking, like setting the site title and such.
-    """
-    )
+    """)
 
 
 @cli.command()

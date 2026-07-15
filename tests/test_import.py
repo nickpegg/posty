@@ -92,16 +92,13 @@ class TestPosty1Importer(object):
             " where the first paragraph should get "
             "converted into a blurb."
         )
-        assert (
-            post.body
-            == """
+        assert post.body == """
 This is a post that has multiple paragraphs, where the first paragraph should get converted into a blurb.
 
 This is the second paragraph, which should be hidden from the blurb.
 
 And a third paragraph, also outside the blurb.
         """.strip()  # noqa
-        )
 
     def test_it_at_least_runs(self, importer: Posty1Importer) -> None:
         importer.run()

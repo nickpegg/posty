@@ -4,7 +4,6 @@ from .json import JsonRenderer
 from .rss import RssRenderer
 from .posty1_redirect import Posty1RedirectRenderer
 
-
 __all__ = [
     "AtomRenderer",
     "HtmlRenderer",
